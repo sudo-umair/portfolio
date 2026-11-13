@@ -63,8 +63,11 @@
 
 @theme {
   /* Type scale. Display sizes are fluid; body sizes are fixed. */
-  /* 11vw keeps "MUHAMMAD" in wide type inside a 320px screen. */
-  --text-display: clamp(2rem, 11vw, 9.5rem);
+  /*
+   * "MUHAMMAD" in wide type is ~7.9em across. 11vw keeps it inside the
+   * gutters on phones; the 8.75rem cap keeps it inside the 76rem container.
+   */
+  --text-display: clamp(2rem, 11vw, 8.75rem);
   --text-display--line-height: 0.86;
   --text-display--letter-spacing: -0.035em;
   --text-display--font-weight: 800;
