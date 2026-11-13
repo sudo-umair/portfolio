@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 
 export const ogSize = { width: 1200, height: 630 };
 
-// Dark theme tokens from globals.css. Satori can't read CSS variables.
+// Satori can't read CSS variables.
 const colors = {
   bg: "#0c0d10",
   fg: "#ededf0",
@@ -14,9 +14,7 @@ const colors = {
   accent: "#7d8bff",
 };
 
-// Static TTF instances: Satori can't use the site's variable woff2 fonts.
-// Read synchronously: under Cache Components an async fs read in a route
-// handler stops prerendering and the image would render on every request.
+// Sync on purpose: an async read stops prerendering under Cache Components.
 const fontDir = join(process.cwd(), "assets/fonts");
 const fonts = {
   wide: readFileSync(join(fontDir, "Archivo-ExpandedExtraBold.ttf")),
@@ -25,13 +23,11 @@ const fonts = {
 };
 
 type OgImageProps = {
-  /** Mono label above the title, e.g. "Web · API". */
   eyebrow: string;
   title: string;
   description: string;
 };
 
-/** Shared 1200×630 card in the site's "Index" style. */
 export function renderOgImage({ eyebrow, title, description }: OgImageProps) {
   return new ImageResponse(
     (

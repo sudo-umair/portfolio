@@ -19,9 +19,6 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
   return pageMetadata({ title: project.name, description: project.summary, path: `/work/${project.slug}` });
 }
 
-// The params read lives inside <Suspense> so the route's shared App Shell
-// (header, back link) doesn't depend on the URL. Links to case studies use
-// prefetch={true}, so the content is resolved before the click anyway.
 export default function CaseStudyPage({ params }: PageProps<"/work/[slug]">) {
   return (
     <main id="main" className="flex-1">
