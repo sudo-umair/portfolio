@@ -1,0 +1,49 @@
+name: Sync résumé
+
+# Pulls the latest PDF published by github.com/sudo-umair/resume and commits
+# it to apps/web/public/resume.pdf when it changed. The push to main makes
+# Vercel redeploy. Builds there are reproducible, so this only commits when
+# the résumé's content actually changed.
+on:
+  schedule:
+    - cron: "17 */6 * * *" # every 6 hours
+  workflow_dispatch: # "Run workflow" in the Actions tab for an immediate sync
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-resume
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SOURCE_URL: https://github.com/sudo-umair/resume/releases/download/resume/muhammad-umair-resume.pdf
+      TARGET: apps/web/public/resume.pdf
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download the latest résumé
+        run: |
+          curl -fsSL "$SOURCE_URL?cb=${GITHUB_RUN_ID}" -o /tmp/resume.pdf
+          head -c 5 /tmp/resume.pdf | grep -q '%PDF-' || { echo "::error::Download is not a PDF"; exit 1; }
+          echo "Downloaded $(wc -c < /tmp/resume.pdf) bytes"
+
+      - name: Commit if it changed
+        run: |
+          if cmp -s /tmp/resume.pdf "$TARGET"; then
+            echo "Résumé unchanged."
+            exit 0
+          fi
+          cp /tmp/resume.pdf "$TARGET"
+          source=$(gh release view resume --repo sudo-umair/resume --json body --jq .body)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$TARGET"
+          git commit -m "chore: update résumé PDF" -m "${source}"
+          git push
+        env:
+          GH_TOKEN: ${{ github.token }}
