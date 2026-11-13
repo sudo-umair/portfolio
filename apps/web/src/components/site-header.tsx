@@ -1,9 +1,14 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import Link from "next/link";
 import { Suspense } from "react";
 import { profile } from "@portfolio/content";
 import { CommandPaletteTrigger } from "./command-palette/trigger";
 import { NavLinks, NavLinksStatic } from "./nav-links";
 import { ThemeToggle } from "./theme-toggle";
+
+// Checked at build time: drop a PDF into public/ and the link switches to it.
+const resumeHref = existsSync(path.join(process.cwd(), "public", "resume.pdf")) ? "/resume.pdf" : "/about#experience";
 
 export function SiteHeader() {
   const [first = "", ...rest] = profile.name.split(" ");
@@ -21,8 +26,8 @@ export function SiteHeader() {
 
         <nav aria-label="Main" className="flex items-center gap-0.5 sm:gap-1">
           {/* usePathname can suspend on routes with unknown params under Cache Components. */}
-          <Suspense fallback={<NavLinksStatic />}>
-            <NavLinks />
+          <Suspense fallback={<NavLinksStatic resumeHref={resumeHref} />}>
+            <NavLinks resumeHref={resumeHref} />
           </Suspense>
           <span aria-hidden className="mx-1 hidden h-5 w-px bg-line sm:block" />
           <CommandPaletteTrigger />
