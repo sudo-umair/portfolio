@@ -74,8 +74,13 @@ test.describe("command palette", () => {
   test("opens with the keyboard shortcut and closes with Escape", async ({ page, isMobile }) => {
     test.skip(isMobile, "Keyboard shortcuts are a desktop feature");
     await page.goto("/");
-    await page.keyboard.press("ControlOrMeta+K");
-    await expect(page.getByRole("dialog", { name: "Command palette" })).toBeVisible();
+    // The shortcut listener attaches on hydration, which can land after the
+    // load event on a remote deploy. Keydowns aren't replayed like clicks, so retry.
+    const palette = page.getByRole("dialog", { name: "Command palette" });
+    await expect(async () => {
+      await page.keyboard.press("ControlOrMeta+K");
+      await expect(palette).toBeVisible({ timeout: 500 });
+    }).toPass({ timeout: 10_000 });
 
     await page.keyboard.press("Escape");
     await expect(page.getByRole("dialog")).toBeHidden();
