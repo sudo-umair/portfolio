@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, platformLabels, projects } from "@portfolio/content";
+import { Architecture } from "@/components/case-study/architecture";
+import { Decisions } from "@/components/case-study/decisions";
 
 // Every case study is prebuilt. Unknown slugs render at request time and 404.
 export function generateStaticParams() {
@@ -70,6 +72,24 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
             </ul>
           </div>
         </section>
+
+        {project.architecture && (
+          <section aria-labelledby="architecture-title" className="page-gutter pb-20">
+            <h2 id="architecture-title" className="mb-8 font-semiwide text-h2 font-bold uppercase">
+              How it works
+            </h2>
+            <Architecture data={project.architecture} />
+          </section>
+        )}
+
+        {project.decisions.length > 0 && (
+          <section aria-labelledby="decisions-title" className="page-gutter pb-20">
+            <h2 id="decisions-title" className="mb-8 font-semiwide text-h2 font-bold uppercase">
+              Key decisions
+            </h2>
+            <Decisions decisions={project.decisions} />
+          </section>
+        )}
       </article>
 
       <nav aria-label="Next project" className="border-t border-line">
