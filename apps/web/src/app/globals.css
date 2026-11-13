@@ -19,6 +19,7 @@
   --line: #e3e4e8;
   --accent: #2337ff;
   --accent-fg: #ffffff;
+  --danger: #c4231c;
   color-scheme: light;
 }
 
@@ -31,6 +32,7 @@
     --line: #26282f;
     --accent: #7d8bff;
     --accent-fg: #0c0d10;
+    --danger: #ff7b72;
     color-scheme: dark;
   }
 }
@@ -43,6 +45,7 @@
   --line: #26282f;
   --accent: #7d8bff;
   --accent-fg: #0c0d10;
+  --danger: #ff7b72;
   color-scheme: dark;
 }
 
@@ -55,6 +58,7 @@
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-accent-fg: var(--accent-fg);
+  --color-danger: var(--danger);
 
   /* Fonts (CSS variables come from next/font in layout.tsx) */
   --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
