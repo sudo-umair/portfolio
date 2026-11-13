@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import { site } from "@/lib/site";
+import { THEME_STORAGE_KEY } from "@/lib/theme";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -43,7 +44,7 @@ export const viewport: Viewport = {
 
 // Runs before first paint so a saved theme never flashes the wrong colors.
 // No saved value means "system" and the CSS media query handles it.
-const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`;
+const themeScript = `(function(){try{var t=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
