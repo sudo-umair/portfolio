@@ -4,6 +4,7 @@ import {
   platformLabels,
   profile,
   projects,
+  skillAreaLabels,
   type Project,
   type SkillArea,
 } from "@portfolio/content";
@@ -55,18 +56,6 @@ export function projectList() {
   return { data: projects.map(projectSummary), count: projects.length };
 }
 
-const skillLabels: Record<SkillArea, string> = {
-  languages: "Languages",
-  frontend: "Frontend",
-  mobile: "Mobile",
-  backend: "Backend",
-  databases: "Databases",
-  cloud: "Cloud & services",
-  ui: "UI & styling",
-  testing: "Testing",
-  devops: "DevOps & tools",
-};
-
 /** Résumé in the JSON Resume schema (https://jsonresume.org/schema), so existing themes and tools can read it. */
 export function jsonResume() {
   const [city = profile.location] = profile.location.split(",");
@@ -101,7 +90,7 @@ export function jsonResume() {
       ...(school.end ? { endDate: school.end } : {}),
     })),
     skills: Object.entries(profile.skills).map(([area, keywords]) => ({
-      name: skillLabels[area as SkillArea],
+      name: skillAreaLabels[area as SkillArea],
       keywords,
     })),
     projects: projects.map((project) => ({

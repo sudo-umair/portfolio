@@ -1,6 +1,14 @@
 import { z } from "zod";
 import { educationData, experienceData, profileData, projectsData } from "./data";
-import { educationSchema, experienceSchema, profileSchema, projectSchema, type Device, type Project } from "./schema";
+import {
+  educationSchema,
+  experienceSchema,
+  profileSchema,
+  projectSchema,
+  type Device,
+  type Project,
+  type SkillArea,
+} from "./schema";
 
 export * from "./schema";
 
@@ -27,6 +35,18 @@ export const platformLabels = {
   "android-tv": "Android TV",
   api: "API",
 } as const satisfies Record<z.infer<typeof projectSchema>["platforms"][number], string>;
+
+export const skillAreaLabels = {
+  languages: "Languages",
+  frontend: "Frontend",
+  mobile: "Mobile",
+  backend: "Backend",
+  databases: "Databases",
+  cloud: "Cloud & services",
+  ui: "UI & styling",
+  testing: "Testing",
+  devops: "DevOps & tools",
+} as const satisfies Record<SkillArea, string>;
 
 /** Device frames a project needs, most distinctive first (TV, then phone, then browser). */
 export function projectDevices(project: Project): Device[] {
