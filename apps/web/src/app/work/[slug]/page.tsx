@@ -42,10 +42,25 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
           <h1 className="mt-3 font-wide text-h1 font-extrabold uppercase">{project.name}</h1>
           <p className="mt-6 max-w-[40ch] text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug">{project.summary}</p>
 
-          <dl className="mt-12 grid gap-x-10 gap-y-6 border-y-2 border-fg py-8 sm:grid-cols-2 lg:grid-cols-[auto_auto_minmax(0,1fr)]">
+          <dl className="mt-12 grid gap-x-10 gap-y-6 border-y-2 border-fg py-8 sm:grid-cols-2 lg:grid-cols-[repeat(4,auto)_minmax(0,1fr)]">
             <Meta label="Role">{project.role}</Meta>
             {project.client && <Meta label="Client">{project.client}</Meta>}
             <Meta label="Platforms">{platforms}</Meta>
+            {project.links.length > 0 && (
+              <Meta label="Links">
+                <ul className="flex flex-col gap-1">
+                  {project.links.map((link) => (
+                    <li key={link.href}>
+                      <a href={link.href} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-accent">
+                        {link.label}
+                        <span aria-hidden> ↗</span>
+                        <span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </Meta>
+            )}
             <Meta label="Stack" className="sm:col-span-full lg:col-span-1">
               <ul className="flex flex-wrap gap-1.5">
                 {project.stack.map((tech) => (
