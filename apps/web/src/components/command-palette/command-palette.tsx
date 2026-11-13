@@ -40,6 +40,14 @@ function buildItems(data: PaletteData, theme: Theme): PaletteItem[] {
       keywords: ["projects", "portfolio"],
       action: { type: "navigate", href: "/#work" },
     },
+    {
+      id: "page-contact",
+      group: "Pages",
+      label: "Contact",
+      hint: "Send me a message",
+      keywords: ["email", "message", "hire", "get in touch", "reach out"],
+      action: { type: "navigate", href: "/contact" },
+    },
     ...(["light", "dark", "system"] as const).map((value) => ({
       id: `theme-${value}`,
       group: "Actions",

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { profile } from "@portfolio/content";
 
 export function SiteFooter() {
@@ -20,6 +21,11 @@ export function SiteFooter() {
         </div>
 
         <ul className="flex flex-wrap gap-x-6 gap-y-2 text-small">
+          <li>
+            <Link href="/contact" className="font-medium underline underline-offset-4 transition-colors hover:text-accent">
+              Get in touch
+            </Link>
+          </li>
           {profile.links.map((link) => (
             <li key={link.href}>
               <a

@@ -1,10 +1,10 @@
+import Link from "next/link";
 import { experience, profile } from "@portfolio/content";
 
 const focusAreas = ["React", "Next.js", "React Native", "Node"];
 
 export function Hero() {
   const current = experience.find((job) => !job.end);
-  const github = profile.links.find((link) => link.label === "GitHub");
 
   return (
     <section aria-labelledby="hero-title" className="page-gutter pt-14 pb-12 sm:pt-24 sm:pb-16">
@@ -33,18 +33,12 @@ export function Hero() {
               See the work
               <span aria-hidden>↓</span>
             </a>
-            {github && (
-              <a
-                href={github.href}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 border border-fg px-5 py-3 text-small font-semibold transition-colors hover:bg-fg hover:text-bg"
-              >
-                GitHub
-                <span aria-hidden>↗</span>
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            )}
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 border border-fg px-5 py-3 text-small font-semibold transition-colors hover:bg-fg hover:text-bg"
+            >
+              Get in touch
+            </Link>
           </div>
         </div>
 
