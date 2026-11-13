@@ -1,15 +1,16 @@
-import { platformLabels, type Project } from "@portfolio/content";
+import { platformLabels, projectDevices, type Project } from "@portfolio/content";
 
 /**
- * Placeholder preview art drawn from tokens: a phone frame for mobile/TV
- * projects, a browser frame for web ones. Swap for real screenshots once
- * they exist (add an image field to the content schema).
+ * Placeholder preview art drawn from tokens, using the project's most
+ * distinctive device (TV, phone, then browser). Swap for real screenshots
+ * once projects have media.
  */
 export function ProjectPreview({ project }: { project: Project }) {
+  const device = projectDevices(project)[0];
   return (
     <div className="flex h-full w-full flex-col justify-between gap-4 bg-surface p-5">
       <div className="flex flex-1 items-center justify-center">
-        {project.variant === "mobile" ? <PhoneFrame tv={project.platforms.includes("android-tv")} /> : <BrowserFrame />}
+        {device === "browser" ? <BrowserFrame /> : <PhoneFrame tv={device === "tv"} />}
       </div>
       <div>
         <p className="font-semiwide text-small font-bold uppercase">{project.name}</p>

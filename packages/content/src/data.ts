@@ -37,7 +37,6 @@ export const projectsData: z.input<typeof projectSchema>[] = [
     tagline: "Real-time AI avatar platform",
     summary:
       "Web platform for hyper-realistic conversational AI video agents with sub-second latency. I built the dashboard, the agent creation flows and the live call experience.",
-    variant: "web",
     platforms: ["web"],
     client: "Beyond Presence",
     role: "Full stack engineer (Codejunkie)",
@@ -56,7 +55,6 @@ export const projectsData: z.input<typeof projectSchema>[] = [
     tagline: "MDR-approved wound imaging app",
     summary:
       "Mobile app for an AI-powered 3D wound analysis and documentation system, approved under the EU Medical Device Regulation. Native camera and sensor integrations with on-device ML.",
-    variant: "mobile",
     platforms: ["ios", "android"],
     client: "CureVision",
     role: "React Native engineer (Codejunkie)",
@@ -75,7 +73,6 @@ export const projectsData: z.input<typeof projectSchema>[] = [
     tagline: "Mosque displays on the web and Android TV",
     summary:
       "Mosque management platform (formerly PrayerBox) with a full-screen display mode for prayer times and announcements, plus an Android TV app on Google Play that runs those displays 24/7 on old TV boxes.",
-    variant: "mobile",
     platforms: ["web", "android-tv"],
     role: "Lead developer",
     stack: [
@@ -107,7 +104,6 @@ export const projectsData: z.input<typeof projectSchema>[] = [
     tagline: "Email marketing platform",
     summary:
       "Full-stack email marketing platform for contacts, campaigns and engagement tracking, sending through a self-hosted Postal mail server, with Stripe billing.",
-    variant: "web",
     platforms: ["web", "api"],
     role: "Sole developer",
     stack: [
