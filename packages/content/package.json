@@ -1,0 +1,21 @@
+{
+  "name": "@portfolio/content",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@portfolio/config": "workspace:*",
+    "typescript": "^5",
+    "vitest": "^3.2.0"
+  }
+}
