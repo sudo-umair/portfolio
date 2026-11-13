@@ -33,6 +33,14 @@ export function SiteFooter() {
               </a>
             </li>
           ))}
+          <li>
+            <a
+              href="/api"
+              className="font-mono text-label uppercase text-muted underline-offset-4 transition-colors hover:text-fg hover:underline"
+            >
+              API
+            </a>
+          </li>
         </ul>
       </div>
     </footer>

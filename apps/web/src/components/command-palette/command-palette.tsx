@@ -63,6 +63,22 @@ function buildItems(data: PaletteData, theme: Theme): PaletteItem[] {
       keywords: ["profile", "social", "contact"],
       action: { type: "external", href: link.href } as const,
     })),
+    {
+      id: "api-resume",
+      group: "Links",
+      label: "Résumé as JSON",
+      hint: "JSON Resume format",
+      keywords: ["cv", "resume", "api", "json", "download"],
+      action: { type: "external", href: "/api/resume.json" },
+    },
+    {
+      id: "api-index",
+      group: "Links",
+      label: "Public API",
+      hint: "Read-only JSON",
+      keywords: ["api", "json", "endpoints", "developer"],
+      action: { type: "external", href: "/api" },
+    },
   ];
 }
 
