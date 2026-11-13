@@ -31,6 +31,21 @@ test.describe("homepage", () => {
   });
 });
 
+test.describe("about", () => {
+  test("shows experience, skills and education, and marks the nav link current", async ({ page }) => {
+    await page.goto("/about");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Muhammad Umair/i);
+    for (const section of ["Experience", "Skills", "Education"]) {
+      await expect(page.getByRole("heading", { level: 2, name: section })).toBeVisible();
+    }
+    await expect(page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "About" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    await expectNoHorizontalScroll(page);
+  });
+});
+
 test.describe("not found", () => {
   for (const path of ["/work/not-a-project", "/definitely-not-a-page"]) {
     test(`${path} returns a real 404`, async ({ page }) => {
