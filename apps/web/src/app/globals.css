@@ -124,6 +124,11 @@
     text-wrap: pretty;
   }
 
+  /* A modal dialog makes the page inert but doesn't stop it scrolling. */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+
   ::selection {
     background: var(--accent);
     color: var(--accent-fg);

@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
+import { platformLabels, profile, projects } from "@portfolio/content";
+import { CommandPaletteProvider } from "@/components/command-palette/provider";
+import type { PaletteData } from "@/components/command-palette/command-palette";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { site } from "@/lib/site";
@@ -48,6 +51,17 @@ export const viewport: Viewport = {
 // No saved value means "system" and the CSS media query handles it.
 const themeScript = `(function(){try{var t=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`;
 
+// Plain data for the client palette: names, taglines and search keywords only.
+const paletteData: PaletteData = {
+  projects: projects.map((project) => ({
+    slug: project.slug,
+    name: project.name,
+    tagline: project.tagline,
+    keywords: [project.tagline, ...project.stack, ...project.platforms.map((p) => platformLabels[p])],
+  })),
+  links: profile.links,
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -65,9 +79,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+        <CommandPaletteProvider data={paletteData}>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </CommandPaletteProvider>
       </body>
     </html>
   );
