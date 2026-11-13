@@ -126,6 +126,75 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       "Custom sending domains with DKIM provisioned on self-hosted Postal, and DNS checks that do not flap.",
       "Stripe Checkout, Customer Portal and idempotent webhooks, deployed to AWS with GitHub Actions.",
     ],
+    architecture: {
+      summary:
+        "One Express API on Bun serves the app, the tracking endpoints and the webhooks, and runs scheduled jobs in-process. Postgres is the only coordination layer: there is no Redis, queue or separate worker.",
+      tiers: [
+        {
+          label: "Clients",
+          nodes: [
+            { name: "React 19 SPA", detail: "TanStack Query for server state, Zustand for UI state. Served from S3 behind CloudFront." },
+            { name: "Email recipients", detail: "Open pixel, signed click links and one-click unsubscribe." },
+          ],
+        },
+        {
+          label: "API",
+          nodes: [
+            { name: "Express 5 on Bun", detail: "EC2 behind CloudFront and WAF, run by PM2. Zod validation, httpOnly JWT cookies with rotating refresh tokens." },
+            { name: "Tracking endpoints", detail: "Outside /api with their own rate limit. Respond first, record after." },
+            { name: "Scheduled jobs", detail: "In-process cron: campaign scheduler every minute, DNS re-checks, trial expiry, cleanup." },
+          ],
+        },
+        {
+          label: "Data",
+          nodes: [
+            { name: "PostgreSQL + Prisma 7", detail: "Campaigns, recipients, quotas and analytics. Raw SQL for aggregations." },
+            { name: "Postal's MariaDB", detail: "Sending domains and DKIM keys, written directly over an SSH tunnel." },
+          ],
+        },
+        {
+          label: "Services",
+          nodes: [
+            { name: "Postal", detail: "Self-hosted mail server. Delivery, bounce and failure webhooks." },
+            { name: "Stripe", detail: "Checkout, Customer Portal and subscription webhooks." },
+            { name: "S3, Unlayer, OAuth", detail: "Uploads, the email editor and stock templates, Google and Facebook sign-in." },
+          ],
+        },
+      ],
+    },
+    decisions: [
+      {
+        title: "Sending without a job queue",
+        problem:
+          "Campaigns with thousands of recipients have to survive restarts and never send twice, without adding Redis and a worker to operate.",
+        solution:
+          "The scheduler claims a campaign with a conditional update from SCHEDULED to SENDING. Each finished batch renews a lease by touching updatedAt, so a campaign stuck for 5 minutes is picked up again. Suspending stops the loop at the next batch, and a campaign is marked failed if 90% of sends fail.",
+      },
+      {
+        title: "Plan quotas under concurrency",
+        problem: "Two sends started at the same moment could both pass the plan's email limit check.",
+        solution:
+          "Limit checks take a per-user Postgres advisory lock, and usage is reserved with a conditional increment in the same transaction that creates the campaign. Going over returns a structured 402, which the app turns into an upgrade prompt.",
+      },
+      {
+        title: "Tracking links that can't be abused",
+        problem: "Click-tracking redirects are a classic open-redirect hole, and slow tracking delays the recipient.",
+        solution:
+          "Tokens are HMAC-signed and checked in constant time. Click targets are looked up from the campaign's own stored links, never taken from the URL. The pixel and redirect respond immediately and the event is written afterwards.",
+      },
+      {
+        title: "Webhooks that survive retries",
+        problem: "Stripe and Postal both retry and can deliver events more than once or out of order.",
+        solution:
+          "Stripe events are verified against the raw body, claimed by event id, and released if processing fails so the retry still works. Postal webhooks use a constant-time secret check, acknowledge first, and only ever move a recipient's status forward. Contacts are suppressed after 3 hard failures.",
+      },
+      {
+        title: "Running our own mail server",
+        problem: "Custom sending domains need DKIM keys provisioned in Postal and DNS checks that don't flap between pass and fail.",
+        solution:
+          "The API generates 2048-bit DKIM keys and writes them into Postal's database. DNS is checked against two public resolvers: one confirmation passes, only two misses fail, and mixed results keep the previous state.",
+      },
+    ],
     featured: true,
     order: 4,
   },
