@@ -12,8 +12,30 @@ const HEADER_H = 64;
 
 export function ProjectIndex({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<string | null>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  const pointer = useRef<{ x: number; y: number } | null>(null);
   const canHover = useCanHover();
+
+  // Next keeps this page mounted while hidden, so its state survives Back.
+  useEffect(() => () => setActive(null), []);
+
+  useEffect(() => {
+    if (active === null) return;
+    const clear = () => setActive(null);
+    const onScroll = () => {
+      const p = pointer.current;
+      setActive(p ? slugAt(listRef.current, p.x, p.y) : null);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("blur", clear);
+    document.addEventListener("visibilitychange", clear);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("blur", clear);
+      document.removeEventListener("visibilitychange", clear);
+    };
+  }, [active]);
 
   // Cursor-following preview: lerp toward the pointer in rAF, write the
   // transform directly so moving the mouse never re-renders React.
@@ -42,6 +64,12 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
 
   function onPointerMove(event: React.PointerEvent) {
     if (!canHover) return;
+    pointer.current = { x: event.clientX, y: event.clientY };
+    // Null on the borders between rows; keep the current row there.
+    const slug = (event.target as Element).closest<HTMLElement>("[data-slug]")?.dataset.slug ?? null;
+    if (slug === null) return;
+    if (slug !== active) setActive(slug);
+
     // Sit above-right of the cursor so it never covers the hovered row
     // (only the dimmed rows around it). Flip at the right and top edges.
     const GAP = 20;
@@ -59,6 +87,7 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
   return (
     <>
       <ul
+        ref={listRef}
         className="group/list border-t border-line"
         onPointerMove={onPointerMove}
         onPointerLeave={() => setActive(null)}
@@ -68,7 +97,8 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
             <Link
               href={`/work/${project.slug}`}
               prefetch
-              onPointerEnter={() => canHover && setActive(project.slug)}
+              data-slug={project.slug}
+              onClick={() => setActive(null)}
               data-active={active === project.slug || undefined}
               className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6 gap-y-1 py-5 transition-[color,opacity] duration-200 group-has-[[data-active]]/list:opacity-35 data-active:!opacity-100 data-active:text-accent md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)_minmax(0,0.9fr)_auto] md:py-6"
             >
@@ -102,6 +132,11 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
       )}
     </>
   );
+}
+
+function slugAt(list: HTMLElement | null, x: number, y: number) {
+  const row = document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-slug]");
+  return row && list?.contains(row) ? (row.dataset.slug ?? null) : null;
 }
 
 /** True only for a real mouse/trackpad, so touch devices never get a stuck preview. */
