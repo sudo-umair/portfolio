@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { profile } from "@portfolio/content";
+import { pageMetadata } from "@/lib/metadata";
 import { ContactForm } from "./contact-form";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description: `Get in touch with ${profile.name} about full-time roles or projects.`,
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

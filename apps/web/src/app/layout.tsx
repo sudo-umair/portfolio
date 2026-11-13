@@ -5,6 +5,7 @@ import { CommandPaletteProvider } from "@/components/command-palette/provider";
 import type { PaletteData } from "@/components/command-palette/command-palette";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { baseOpenGraph } from "@/lib/metadata";
 import { site } from "@/lib/site";
 import { THEME_STORAGE_KEY } from "@/lib/theme";
 import "./globals.css";
@@ -29,8 +30,7 @@ export const metadata: Metadata = {
   },
   description: site.description,
   openGraph: {
-    type: "website",
-    siteName: site.name,
+    ...baseOpenGraph,
     title: site.title,
     description: site.description,
     url: "/",

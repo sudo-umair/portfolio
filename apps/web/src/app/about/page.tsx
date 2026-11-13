@@ -2,11 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { education, experience, getProject, profile, skillAreaLabels, type SkillArea } from "@portfolio/content";
 import { formatRange } from "@/lib/dates";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: profile.bio,
-};
+export const metadata: Metadata = pageMetadata({ title: "About", description: profile.bio, path: "/about" });
 
 export default function AboutPage() {
   const current = experience.find((job) => !job.end);

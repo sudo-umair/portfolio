@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getProject, platformLabels, projects } from "@portfolio/content";
 import { Architecture } from "@/components/case-study/architecture";
 import { Decisions } from "@/components/case-study/decisions";
+import { pageMetadata } from "@/lib/metadata";
 
 // Every case study is prebuilt. Unknown slugs render at request time and 404.
 export function generateStaticParams() {
@@ -15,11 +16,7 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) return {};
-  return {
-    title: project.name,
-    description: project.summary,
-    openGraph: { title: project.name, description: project.summary, url: `/work/${project.slug}` },
-  };
+  return pageMetadata({ title: project.name, description: project.summary, path: `/work/${project.slug}` });
 }
 
 // The params read lives inside <Suspense> so the route's shared App Shell
