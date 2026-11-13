@@ -77,7 +77,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       "Mosque management platform (formerly PrayerBox) with a full-screen display mode for prayer times and announcements, plus an Android TV app on Google Play that runs those displays 24/7 on old TV boxes.",
     variant: "mobile",
     platforms: ["web", "android-tv"],
-    role: "Full stack engineer",
+    role: "Lead developer",
     stack: [
       "React 19",
       "TypeScript",
@@ -109,7 +109,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       "Full-stack email marketing platform for contacts, campaigns and engagement tracking, sending through a self-hosted Postal mail server, with Stripe billing.",
     variant: "web",
     platforms: ["web", "api"],
-    role: "Full stack engineer",
+    role: "Sole developer",
     stack: [
       "React 19",
       "TanStack Query",
