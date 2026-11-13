@@ -3,7 +3,7 @@ import { ProjectIndex } from "./project-index";
 
 export function WorkSection() {
   return (
-    <section id="work" aria-labelledby="work-title" className="page-gutter scroll-mt-20 pb-24">
+    <section id="work" aria-labelledby="work-title" className="page-gutter pb-24">
       <div className="flex items-baseline justify-between gap-4 pb-6">
         <h2 id="work-title" className="font-semiwide text-h2 font-bold uppercase">
           Selected work
