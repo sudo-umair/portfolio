@@ -8,7 +8,7 @@ export const profileData: z.input<typeof profileSchema> = {
   name: "Muhammad Umair",
   title: "Full Stack Engineer",
   headline: "I build web, mobile and TV apps with React, React Native and Node.",
-  bio: "Full stack engineer with 5+ years building production web and mobile apps, from real-time AI avatar platforms to an MDR-approved medical imaging app. I work across React, Next.js, React Native and Node, and I'm comfortable wiring in hardware sensors, ML models and real-time video.",
+  bio: "Full stack engineer with 5+ years building production web and mobile apps, from real-time AI avatar platforms to cureVision, an MDR-certified medical wound scanner. I work across React, Next.js, React Native and Node, and I'm comfortable wiring in hardware sensors, ML models and real-time video.",
   location: "Rawalpindi, Pakistan",
   countryCode: "PK",
   timezone: "Asia/Karachi",
@@ -52,18 +52,102 @@ export const projectsData: z.input<typeof projectSchema>[] = [
   },
   {
     slug: "curevision",
-    name: "CureVision",
-    tagline: "MDR-approved wound imaging app",
+    name: "cureVision",
+    tagline: "React Native on a custom medical scanner",
     summary:
-      "Mobile app for an AI-powered 3D wound analysis and documentation system, approved under the EU Medical Device Regulation. Native camera and sensor integrations with on-device ML.",
-    platforms: ["ios", "android"],
-    client: "CureVision",
-    role: "React Native engineer (Codejunkie)",
-    stack: ["React Native", "TypeScript", "Native Modules", "Reanimated", "ML models"],
+      "cureVision is an MDR-certified handheld wound scanner: a custom Android device with a depth camera, a custom flash and a temperature sensor, running a React Native app I led. Clinicians scan a chronic wound and get 3D measurements and on-device AI tissue analysis, synced to the cureVision web platform. The product won the Health-i-Award 2023 and a Bavarian Innovation Award 2024.",
+    platforms: ["android"],
+    client: "cureVision GmbH, Munich",
+    role: "Lead React Native developer (Codejunkie)",
+    stack: [
+      "React Native",
+      "TypeScript",
+      "Java native modules",
+      "Vendor camera SDK",
+      "TensorFlow Lite",
+      "Redux",
+      "OTA updates",
+    ],
     highlights: [
-      "Native integrations for a 3D camera and a temperature sensor with depth-accurate measurement.",
-      "Pre-trained ML models for automatic wound detection and analysis.",
-      "Offline capture and documentation, synced to the CureVision web platform.",
+      "Led the React Native app for cureVision, a handheld wound scanner built on a custom Android device.",
+      "Java native modules wrapping the vendor SDK for the depth camera and custom flash, with temperature readings streamed to JavaScript as events.",
+      "A 3D view of each scan, with wound measurements computed from the depth data.",
+      "A depth pipeline kept fast across the bridge by downsampling and moving heavy processing into native code.",
+      "Offline-first sync: scans queued in a local database and uploaded in chunks, with automatic retries when the connection returns.",
+      "Shipped under MDR: documented requirements, traceable testing and signed-off releases.",
+    ],
+    links: [{ label: "cureVision website", href: "https://curevision.de" }],
+    architecture: {
+      summary:
+        "A custom Android device with three pieces of hardware the app had to drive. Java native modules own the vendor SDK and do the heavy depth processing; the React Native app runs the scan flow, 3D view and measurements, and an offline queue syncs every scan to the cureVision web platform.",
+      tiers: [
+        {
+          label: "Device hardware",
+          nodes: [
+            { name: "Depth 3D camera", detail: "Driven through the camera vendor's Android SDK." },
+            { name: "Custom flash", detail: "Fired through the vendor SDK for consistent lighting on every scan." },
+            { name: "Temperature sensor", detail: "Readings streamed continuously to the app." },
+          ],
+        },
+        {
+          label: "Native (Android)",
+          nodes: [
+            { name: "Java native modules", detail: "One owner for the SDK, lifecycle handling, errors surfaced to JS instead of crashes." },
+            { name: "Depth processing", detail: "Heavy work stays native; data is downsampled before it crosses the bridge." },
+            { name: "TensorFlow Lite", detail: "On-device model for tissue analysis." },
+          ],
+        },
+        {
+          label: "React Native app",
+          nodes: [
+            { name: "Scan flow", detail: "Capture guidance for distance and angle, then the scan." },
+            { name: "3D view & measurements", detail: "Renders the scan and computes wound measurements from depth data." },
+            { name: "Redux store", detail: "App and scan state." },
+          ],
+        },
+        {
+          label: "Storage & sync",
+          nodes: [
+            { name: "Local database queue", detail: "Every scan saved on the device first." },
+            { name: "Chunked uploads", detail: "Large scans uploaded in parts, retried when back online." },
+            { name: "cureVision web platform", detail: "Wound records and reports." },
+          ],
+        },
+      ],
+    },
+    decisions: [
+      {
+        title: "Depth data across the bridge",
+        problem:
+          "The classic React Native bridge serializes everything, and full-resolution depth frames sent as base64 were too heavy for a responsive app.",
+        solution:
+          "Depth data is downsampled before it crosses the bridge and the heavy processing moved into Java. JavaScript only receives what the 3D view, the measurements and the model actually need.",
+      },
+      {
+        title: "A vendor SDK that can't crash a scan",
+        problem:
+          "The vendor SDK was the only way to reach the camera and flash, and its crashes or lifecycle bugs could take down the app in the middle of a scan.",
+        solution:
+          "A single native module owns the SDK instance, so no two screens ever open it. It opens and releases the hardware with the app and screen lifecycle, turns native exceptions into JavaScript errors, and detects a stuck camera so it can reinitialize it and let the clinician retry.",
+      },
+      {
+        title: "Measurements a clinician can trust",
+        problem: "A wound record needs measurements that are accurate and consistent between scans, weeks apart.",
+        solution:
+          "Device calibration is applied when converting depth to real-world sizes, the custom flash gives every scan the same lighting, on-screen guidance gets distance and angle right before capture, and several depth frames are averaged to reduce noise.",
+      },
+      {
+        title: "Reliable sync on bad Wi-Fi",
+        problem: "Large scans have to reach the web platform from clinics and care homes with patchy connections, without losing any.",
+        solution:
+          "Every scan is written to a local database queue first, then uploaded in chunks with automatic retries when the connection comes back.",
+      },
+      {
+        title: "Shipping a certified medical device",
+        problem: "Under the EU Medical Device Regulation, releases can't be ad hoc.",
+        solution:
+          "Requirements were documented, tests traceable to them and every release signed off. JavaScript-only fixes shipped over the air; anything touching native code shipped as a new APK.",
+      },
     ],
     featured: true,
     order: 2,
@@ -307,7 +391,7 @@ export const experienceData: z.input<typeof experienceSchema>[] = [
     start: "2023-02",
     end: "2024-03",
     highlights: [
-      "Shipped 3+ React Native apps with thousands of users, including CureVision.",
+      "Shipped 3+ React Native apps with thousands of users, including cureVision, an MDR-certified wound scanner.",
       "Native modules for a 3D camera, temperature sensor hardware and on-device ML.",
       "Offline-first data flows with Redux and Zustand; 20+ features shipped and 200+ bugs fixed.",
     ],
