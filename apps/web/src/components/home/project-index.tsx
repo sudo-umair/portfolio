@@ -67,6 +67,7 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
           <li key={project.slug} className="border-b border-line">
             <Link
               href={`/work/${project.slug}`}
+              prefetch
               onPointerEnter={() => canHover && setActive(project.slug)}
               data-active={active === project.slug || undefined}
               className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6 gap-y-1 py-5 transition-[color,opacity] duration-200 group-has-[[data-active]]/list:opacity-35 data-active:!opacity-100 data-active:text-accent md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)_minmax(0,0.9fr)_auto] md:py-6"

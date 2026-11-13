@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, platformLabels, projects } from "@portfolio/content";
@@ -21,7 +22,25 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
   };
 }
 
-export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]">) {
+// The params read lives inside <Suspense> so the route's shared App Shell
+// (header, back link) doesn't depend on the URL. Links to case studies use
+// prefetch={true}, so the content is resolved before the click anyway.
+export default function CaseStudyPage({ params }: PageProps<"/work/[slug]">) {
+  return (
+    <main id="main" className="flex-1">
+      <div className="page-gutter pt-10 sm:pt-14">
+        <Link href="/#work" className="font-mono text-label uppercase text-muted transition-colors hover:text-fg">
+          <span aria-hidden>← </span>All work
+        </Link>
+      </div>
+      <Suspense fallback={<div className="min-h-[60vh]" />}>
+        <CaseStudy params={params} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function CaseStudy({ params }: Pick<PageProps<"/work/[slug]">, "params">) {
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();
@@ -31,14 +50,10 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
   const platforms = project.platforms.map((p) => platformLabels[p]).join(" · ");
 
   return (
-    <main id="main" className="flex-1">
+    <>
       <article>
-        <header className="page-gutter pt-10 pb-12 sm:pt-14 sm:pb-16">
-          <Link href="/#work" className="font-mono text-label uppercase text-muted transition-colors hover:text-fg">
-            <span aria-hidden>← </span>All work
-          </Link>
-
-          <p className="mt-10 font-mono text-label uppercase text-muted">{platforms}</p>
+        <header className="page-gutter pt-10 pb-12 sm:pb-16">
+          <p className="font-mono text-label uppercase text-muted">{platforms}</p>
           <h1 className="mt-3 font-wide text-h1 font-extrabold uppercase">{project.name}</h1>
           <p className="mt-6 max-w-[40ch] text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug">{project.summary}</p>
 
@@ -110,6 +125,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
       <nav aria-label="Next project" className="border-t border-line">
         <Link
           href={`/work/${next.slug}`}
+          prefetch
           className="page-gutter group flex items-baseline justify-between gap-6 py-10 transition-colors hover:text-accent"
         >
           <span className="flex flex-col gap-1">
@@ -121,7 +137,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
           </span>
         </Link>
       </nav>
-    </main>
+    </>
   );
 }
 
