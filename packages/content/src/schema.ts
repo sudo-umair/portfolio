@@ -84,12 +84,24 @@ export const experienceSchema = z.object({
   projects: z.array(z.string()).default([]),
 });
 
+export const educationSchema = z.object({
+  institution: z.string(),
+  studyType: z.string(),
+  area: z.string(),
+  location: z.string(),
+  start: z.string().regex(/^\d{4}-\d{2}$/),
+  end: z.string().regex(/^\d{4}-\d{2}$/).optional(),
+  highlights: z.array(z.string()).default([]),
+});
+
 export const profileSchema = z.object({
   name: z.string(),
   title: z.string(),
   headline: z.string(),
   bio: z.string(),
   location: z.string(),
+  /** ISO 3166-1 alpha-2, used by the JSON Resume export. */
+  countryCode: z.string().length(2),
   timezone: z.string(),
   yearsExperience: z.number().int().positive(),
   openToWork: z.boolean(),
@@ -102,6 +114,7 @@ export type SkillArea = z.infer<typeof skillAreaSchema>;
 export type Project = z.infer<typeof projectSchema>;
 export type Experience = z.infer<typeof experienceSchema>;
 export type Profile = z.infer<typeof profileSchema>;
+export type Education = z.infer<typeof educationSchema>;
 export type Architecture = z.infer<typeof architectureSchema>;
 export type Decision = z.infer<typeof decisionSchema>;
 export type Media = z.infer<typeof mediaSchema>;

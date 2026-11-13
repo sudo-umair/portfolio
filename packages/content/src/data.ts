@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import type { experienceSchema, profileSchema, projectSchema } from "./schema";
+import type { educationSchema, experienceSchema, profileSchema, projectSchema } from "./schema";
 
 // Raw input data. Parsed and validated in index.ts.
 // Source: cv-umair repo (resume/*.tex).
@@ -10,6 +10,7 @@ export const profileData: z.input<typeof profileSchema> = {
   headline: "I build web, mobile and TV apps with React, React Native and Node.",
   bio: "Full stack engineer with 5+ years building production web and mobile apps, from real-time AI avatar platforms to an MDR-approved medical imaging app. I work across React, Next.js, React Native and Node, and I'm comfortable wiring in hardware sensors, ML models and real-time video.",
   location: "Rawalpindi, Pakistan",
+  countryCode: "PK",
   timezone: "Asia/Karachi",
   yearsExperience: 5,
   openToWork: true,
@@ -322,5 +323,19 @@ export const experienceData: z.input<typeof experienceSchema>[] = [
       "APIs and backends, plus React, React Native and Next.js frontends.",
     ],
     projects: [],
+  },
+];
+
+export const educationData: z.input<typeof educationSchema>[] = [
+  {
+    institution: "National University of Modern Languages (NUML)",
+    studyType: "Bachelor's",
+    area: "Software Engineering",
+    location: "Islamabad, Pakistan",
+    start: "2019-02",
+    end: "2023-01",
+    highlights: [
+      "Final-year project: Share and Care, a MERN and React Native platform for hospitals to share resources and connect with donors.",
+    ],
   },
 ];
