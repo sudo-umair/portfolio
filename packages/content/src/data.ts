@@ -70,10 +70,10 @@ export const projectsData: z.input<typeof projectSchema>[] = [
   {
     slug: "salathub",
     name: "SalatHub",
-    tagline: "Mosque displays on the web and Android TV",
+    tagline: "Mosque platform: web, Android and Android TV",
     summary:
-      "Mosque management platform (formerly PrayerBox) with a full-screen display mode for prayer times and announcements, plus an Android TV app on Google Play that runs those displays 24/7 on old TV boxes.",
-    platforms: ["web", "android-tv"],
+      "Mosque management platform (formerly PrayerBox): a web console for masjid admins, full-screen prayer-time displays that run 24/7 on old TV boxes, the SalatHub TV app, and the Alkhairia mobile app for worshippers. Both apps are on Google Play.",
+    platforms: ["web", "android", "android-tv"],
     role: "Lead developer",
     stack: [
       "React 19",
@@ -83,17 +83,102 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       "Supabase",
       "PostgreSQL",
       "Edge Functions",
+      "pg_cron",
       "Stripe",
       "Expo SDK 57",
+      "React Native",
       "react-native-tvos",
+      "Expo Notifications",
       "EAS Update",
     ],
     highlights: [
+      "One Supabase backend serving four clients: the admin console, browser displays, the SalatHub TV app and the Alkhairia mobile app.",
       "Screen codes act as bearer credentials: displays read only through SECURITY DEFINER functions, with anonymous table access fully revoked in a two-phase rollout.",
-      "Realtime refresh through a content-free revision counter, so locked-down displays still update within a second of an edit.",
-      "One dependency-free prayer-time engine shared by the browser and Deno edge functions, with CI failing if the copies drift.",
+      "Prayer-time change alerts that compare old and new settings against the same data, after false alerts showed up in production.",
+      "Alkhairia mobile app (part of SalatHub, Android): follow masjids by location, search or QR code, a combined feed, push alerts and local prayer reminders that keep working offline.",
+      "SalatHub TV (Android TV): a WebView shell with D-pad focus management, network recovery and hourly OTA updates for unattended screens.",
       "Display build targets Chrome 83 for old TV boxes and keeps showing the last good data when offline.",
-      "Android TV app on Google Play: D-pad focus management, network recovery and hourly OTA updates via EAS for unattended screens.",
+    ],
+    architecture: {
+      summary:
+        "Four clients share one Supabase project. Each gets a different, narrow door: admins use Supabase Auth with row-level security, displays use screen-code functions, and the mobile app goes through a single edge function. No client can read the content tables directly without a session.",
+      tiers: [
+        {
+          label: "Clients",
+          nodes: [
+            { name: "Admin console", detail: "React 19 SPA on Vercel. Masjid admins and moderators manage content, screens and prayer settings." },
+            { name: "Display screens", detail: "The same SPA at /display, built for Chrome 83. Offline-first PWA for TVs and browsers." },
+            { name: "SalatHub TV", detail: "Android TV app: Expo, react-native-tvos and a WebView around the display. Hourly OTA updates." },
+            { name: "Alkhairia mobile app", detail: "Part of SalatHub. Android app on Expo SDK 57. Follow masjids, feed, push alerts and local prayer reminders." },
+          ],
+        },
+        {
+          label: "Access",
+          nodes: [
+            { name: "Supabase Auth + RLS", detail: "Admins and moderators. Role checks in SECURITY DEFINER helpers, plan limits enforced by triggers." },
+            { name: "Screen-code functions", detail: "Displays have no session. They read one payload through functions keyed by the screen code." },
+            { name: "masjid-directory", detail: "The mobile app's whole API. Anonymous device IDs, rate limiting, capped IDs, cached responses." },
+          ],
+        },
+        {
+          label: "Data",
+          nodes: [
+            { name: "PostgreSQL", detail: "80 migrations. Triggers queue notifications and invalidate cached prayer days." },
+            { name: "Realtime", detail: "Only a per-masjid revision counter is published. Screens refetch when it changes." },
+            { name: "Storage", detail: "Logos, posts and slides, cached on displays by the service worker." },
+          ],
+        },
+        {
+          label: "Jobs & services",
+          nodes: [
+            { name: "pg_cron + Edge Functions", detail: "16 Deno functions: prayer-change and content alerts every minute, billing, verification." },
+            { name: "Expo Push, Stripe, Resend", detail: "Push notifications, Pro plan billing and email." },
+            { name: "Al-Adhan, OpenWeather, Geoapify", detail: "Prayer times, forecasts, geocoding and map tiles." },
+          ],
+        },
+      ],
+    },
+    decisions: [
+      {
+        title: "Screen codes as credentials",
+        problem:
+          "TV displays can't sign in, but the original row-level security let anyone holding the public key list every screen code and read every masjid's content.",
+        solution:
+          "Displays now read only through SECURITY DEFINER functions keyed by their code, and anonymous SELECT grants were revoked outright, not just the policies. It shipped in two phases, using screen heartbeats to confirm displays in the field had the new code before old access was removed. A script verifies the lockdown against a live project.",
+      },
+      {
+        title: "Realtime for locked-down screens",
+        problem:
+          "Supabase Realtime checks row-level security before delivering a change, so displays with no table access would never hear about edits.",
+        solution:
+          "A trigger on 10 content tables bumps a per-masjid revision counter, the only table displays can read. Screens subscribe to it, ignore the value and refetch their single payload, debounced. A 5-minute poll covers dropped sockets.",
+      },
+      {
+        title: "No false prayer-time alerts",
+        problem:
+          "Comparing cached prayer times before and after an edit sent false \"Asr changed\" alerts in production, because the upstream data itself can shift.",
+        solution:
+          "A trigger snapshots the masjid's settings from before the first save, and the job waits 2 minutes for edits to settle. It then resolves the next 14 days with the old and new settings against one shared Al-Adhan fetch and only reports real differences. Failed sends are requeued.",
+      },
+      {
+        title: "One prayer engine everywhere",
+        problem: "Times on the console, the displays and in push alerts must never disagree.",
+        solution:
+          "A dependency-free prayer engine runs in the browser and is copied into the Deno edge functions. CI fails if the copy is stale. The server also sends the masjid's own clock with every response, so the app shows correct times whatever time zone the phone is set to.",
+      },
+      {
+        title: "Old TV boxes, unattended",
+        problem:
+          "Displays run 24/7 on cheap Android boxes with old WebViews and flaky Wi-Fi, and nobody is there to restart them.",
+        solution:
+          "One browser floor (Chrome 83) drives both the JS and CSS fallbacks. Displays render the last good data first and keep it when a fetch fails. The TV app reloads on reconnect, can wipe the service worker from native code, and installs OTA updates within an hour without a relaunch.",
+      },
+      {
+        title: "Reminders that respect the OS",
+        problem: "Local prayer reminders run into Android's exact-alarm permission and a cap on pending notifications.",
+        solution:
+          "Reminders are rebuilt as a whole from the cached week, in a queue, after persisted state loads, so a background refresh can't double-schedule. They stay under the 64-notification cap with a final \"reminders paused\" notice. A small Kotlin module checks the exact-alarm permission and links to the setting.",
+      },
     ],
     featured: true,
     order: 3,
