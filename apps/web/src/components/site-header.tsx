@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { profile } from "@portfolio/content";
+import { CommandPaletteTrigger } from "./command-palette/trigger";
 import { NavLinks, NavLinksStatic } from "./nav-links";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -24,7 +25,11 @@ export function SiteHeader() {
             <NavLinks />
           </Suspense>
           <span aria-hidden className="mx-1 hidden h-5 w-px bg-line sm:block" />
-          <ThemeToggle />
+          <CommandPaletteTrigger />
+          {/* Below 360px there's no room; the palette has the same theme actions. */}
+          <div className="max-[359px]:hidden">
+            <ThemeToggle />
+          </div>
         </nav>
       </div>
     </header>
