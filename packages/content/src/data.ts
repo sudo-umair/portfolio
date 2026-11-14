@@ -264,6 +264,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
     summary:
       "Mosque management platform (formerly PrayerBox): a web console for masjid admins, full-screen prayer-time displays that run 24/7 on old TV boxes, the SalatHub TV app, and the Alkhairia mobile app for worshippers. Both apps are on Google Play.",
     platforms: ["web", "android", "android-tv"],
+    client: "Alkhairia",
     via: "Codejunkie",
     role: "Lead developer",
     period: { start: "2024-04" },
@@ -290,6 +291,11 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       "Alkhairia mobile app (part of SalatHub, Android): follow masjids by location, search or QR code, a combined feed, push alerts and local prayer reminders that keep working offline.",
       "SalatHub TV (Android TV): a WebView shell with D-pad focus management, network recovery and hourly OTA updates for unattended screens.",
       "Display build targets Chrome 83 for old TV boxes and keeps showing the last good data when offline.",
+    ],
+    links: [
+      { label: "SalatHub website", href: "https://salathub.alkhairia.org" },
+      { label: "Alkhairia on Google Play", href: "https://play.google.com/store/apps/details?id=com.alkhairia.dhikr" },
+      { label: "SalatHub TV on Google Play", href: "https://play.google.com/store/apps/details?id=com.alkhairi.salathub" },
     ],
     architecture: {
       summary:
