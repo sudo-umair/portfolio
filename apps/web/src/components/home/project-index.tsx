@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, ViewTransition } from "react";
 import { platformLabels, type Project } from "@portfolio/content";
+import { projectTitleTransition } from "@/lib/transitions";
 import { ProjectPreview } from "./project-preview";
 
 const PREVIEW_W = 280;
@@ -102,7 +103,10 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
               data-active={active === project.slug || undefined}
               className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6 gap-y-1 py-5 transition-[color,opacity] duration-200 group-has-[[data-active]]/list:opacity-35 data-active:!opacity-100 data-active:text-accent md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)_minmax(0,0.9fr)_auto] md:py-6"
             >
-              <span className="font-semiwide text-h3 font-bold md:text-[1.5rem]">{project.name}</span>
+              <ViewTransition name={projectTitleTransition(project.slug)} share="morph" default="none">
+                {/* w-fit: the snapshot hugs the text, so it scales evenly into the case-study title. */}
+                <span className="w-fit font-semiwide text-h3 font-bold md:text-[1.5rem]">{project.name}</span>
+              </ViewTransition>
               <span aria-hidden className="text-h3 md:order-last">
                 →
               </span>

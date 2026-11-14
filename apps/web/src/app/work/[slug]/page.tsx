@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
+import { Suspense, ViewTransition } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, platformLabels, projects } from "@portfolio/content";
 import { Architecture } from "@/components/case-study/architecture";
 import { Decisions } from "@/components/case-study/decisions";
 import { pageMetadata } from "@/lib/metadata";
+import { projectTitleTransition } from "@/lib/transitions";
 
 // Every case study is prebuilt. Unknown slugs render at request time and 404.
 export function generateStaticParams() {
@@ -48,7 +49,9 @@ async function CaseStudy({ params }: Pick<PageProps<"/work/[slug]">, "params">) 
       <article>
         <header className="page-gutter pt-10 pb-12 sm:pb-16">
           <p className="font-mono text-label uppercase text-muted">{platforms}</p>
-          <h1 className="mt-3 font-wide text-h1 font-extrabold uppercase">{project.name}</h1>
+          <ViewTransition name={projectTitleTransition(project.slug)} share="morph" default="none">
+            <h1 className="mt-3 w-fit font-wide text-h1 font-extrabold uppercase">{project.name}</h1>
+          </ViewTransition>
           <p className="mt-6 max-w-[40ch] text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug">{project.summary}</p>
 
           <dl className="mt-12 grid gap-x-10 gap-y-6 border-y-2 border-fg py-8 sm:grid-cols-2 lg:grid-cols-[repeat(4,auto)_minmax(0,1fr)]">
@@ -124,7 +127,9 @@ async function CaseStudy({ params }: Pick<PageProps<"/work/[slug]">, "params">) 
         >
           <span className="flex flex-col gap-1">
             <span className="font-mono text-label uppercase text-muted">Next project</span>
-            <span className="font-semiwide text-h2 font-bold uppercase">{next.name}</span>
+            <ViewTransition name={projectTitleTransition(next.slug)} share="morph" default="none">
+              <span className="w-fit font-semiwide text-h2 font-bold uppercase">{next.name}</span>
+            </ViewTransition>
           </span>
           <span aria-hidden className="text-h2 transition-transform group-hover:translate-x-1">
             →

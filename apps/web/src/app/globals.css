@@ -100,6 +100,9 @@
   /* Layout */
   --container-page: 76rem;
   --container-prose: 40rem;
+
+  /* Motion */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
@@ -154,6 +157,40 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/*
+ * View transitions (React <ViewTransition> on route changes).
+ * The project title morphs between pages; a short blur mid-flight hides the
+ * scaling of text snapshots that differ in case and width.
+ */
+::view-transition-group(.morph) {
+  animation-duration: 450ms;
+  animation-timing-function: var(--ease-out-quint);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+/* The page stays clickable while a transition runs. */
+::view-transition {
+  pointer-events: none;
+}
+
+/* The `*` rule above doesn't match view-transition pseudo-elements. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*),
+  ::view-transition-image-pair(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
   }
 }
 
