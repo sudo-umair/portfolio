@@ -579,6 +579,15 @@ export const projectsData: z.input<typeof projectSchema>[] = [
         caption: "Dashboard: plan usage and engagement at a glance.",
       },
       {
+        src: "/work/mailcamp/campaign-wizard.mp4",
+        poster: "/work/mailcamp/campaign-wizard-poster.webp",
+        alt: "Creating a campaign: typing the name, subject and preview text while an inbox preview updates, picking a sender, a template and two groups, then reviewing it before sending.",
+        device: "browser",
+        width: 1280,
+        height: 800,
+        caption: "The campaign wizard, with a live inbox preview and a review before sending.",
+      },
+      {
         src: "/work/mailcamp/template-editor.webp",
         alt: "The drag-and-drop template editor showing a coffee roaster's monthly newsletter.",
         device: "browser",
@@ -603,11 +612,12 @@ export const projectsData: z.input<typeof projectSchema>[] = [
         caption: "Sent and scheduled campaigns on a calendar.",
       },
       {
-        src: "/work/mailcamp/analytics.webp",
-        alt: "The analytics overview for the month, with rate cards and an engagement-over-time chart.",
+        src: "/work/mailcamp/analytics.mp4",
+        poster: "/work/mailcamp/analytics-poster.webp",
+        alt: "The analytics page moving from the month's overview and engagement chart to per-campaign rates, the most engaged contacts, and sending domain performance.",
         device: "browser",
-        width: 1440,
-        height: 900,
+        width: 1280,
+        height: 800,
         caption: "Analytics across campaigns, audience and sending domains.",
       },
       {
