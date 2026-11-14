@@ -126,6 +126,9 @@
   }
 }
 
+/* The homepage intro plays once per page load; IntroSeen sets the attribute when it ends. */
+@custom-variant intro (html:not([data-intro-seen]) &);
+
 /* Registered so it interpolates; the rule-* utilities draw their lines this wide. */
 @property --rule-progress {
   syntax: "<percentage>";

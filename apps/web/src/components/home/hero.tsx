@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { experience, profile } from "@portfolio/content";
+import { IntroSeen } from "./intro-seen";
 
 const focusAreas = ["React", "Next.js", "React Native", "Node"];
 
@@ -7,7 +8,7 @@ export function Hero() {
   const current = experience.find((job) => !job.end);
 
   return (
-    <section aria-labelledby="hero-title" className="page-gutter pt-14 pb-12 sm:pt-24 sm:pb-16">
+    <section data-intro aria-labelledby="hero-title" className="page-gutter pt-14 pb-12 sm:pt-24 sm:pb-16">
       <p className="font-mono text-label uppercase text-muted">
         {profile.title} — {focusAreas.join(" · ")}
       </p>
@@ -21,15 +22,15 @@ export function Hero() {
       <h1 id="hero-title" className="mt-5 font-wide text-display uppercase">
         {profile.name.split(" ").map((word, index) => (
           <span key={word} className="block [clip-path:inset(-0.25em_-0.25em_0_-0.25em)]">
-            <span className="block motion-safe:animate-hero-rise" style={{ animationDelay: `${index * 90}ms` }}>
+            <span className="block intro:motion-safe:animate-hero-rise" style={{ animationDelay: `${index * 90}ms` }}>
               {word}
             </span>
           </span>
         ))}
       </h1>
 
-      <div className="mt-10 grid gap-8 rule-b pb-10 motion-safe:animate-rule-draw motion-safe:[animation-delay:250ms] md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-16">
-        <div className="flex flex-col gap-8 motion-safe:animate-hero-fade motion-safe:[animation-delay:300ms]">
+      <div className="mt-10 grid gap-8 rule-b pb-10 intro:motion-safe:animate-rule-draw motion-safe:[animation-delay:250ms] md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-16">
+        <div className="flex flex-col gap-8 intro:motion-safe:animate-hero-fade motion-safe:[animation-delay:300ms]">
           <p className="max-w-[34ch] text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug">{profile.headline}</p>
 
           <div className="flex flex-wrap gap-3">
@@ -49,7 +50,7 @@ export function Hero() {
           </div>
         </div>
 
-        <dl className="grid grid-cols-2 gap-x-10 gap-y-5 text-small motion-safe:animate-hero-fade motion-safe:[animation-delay:400ms] md:grid-cols-1">
+        <dl className="grid grid-cols-2 gap-x-10 gap-y-5 text-small intro:motion-safe:animate-hero-fade motion-safe:[animation-delay:400ms] md:grid-cols-1">
           {current && (
             <Fact label="Currently">
               {current.title}
@@ -65,6 +66,7 @@ export function Hero() {
           </Fact>
         </dl>
       </div>
+      <IntroSeen />
     </section>
   );
 }
