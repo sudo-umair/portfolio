@@ -19,5 +19,6 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     eyebrow: `Case study · ${project.platforms.map((p) => platformLabels[p]).join(" · ")}`,
     title: project.name,
     description: project.tagline,
+    cta: { label: "Read case study", path: `/work/${project.slug}` },
   });
 }

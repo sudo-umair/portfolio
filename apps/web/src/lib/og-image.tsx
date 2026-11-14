@@ -12,6 +12,7 @@ const colors = {
   fg: "#ededf0",
   muted: "#9a9da8",
   accent: "#7d8bff",
+  line: "#2a2c33",
 };
 
 // Sync on purpose: an async read stops prerendering under Cache Components.
@@ -26,9 +27,13 @@ type OgImageProps = {
   eyebrow: string;
   title: string;
   description: string;
+  /** Button in the footer; `path` is printed beside it so the link survives as plain text. */
+  cta?: { label: string; path: string };
 };
 
-export function renderOgImage({ eyebrow, title, description }: OgImageProps) {
+const defaultCta = { label: "Get in touch", path: "/contact" };
+
+export function renderOgImage({ eyebrow, title, description, cta = defaultCta }: OgImageProps) {
   return new ImageResponse(
     (
       <div
@@ -38,8 +43,9 @@ export function renderOgImage({ eyebrow, title, description }: OgImageProps) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: "64px 72px",
-          background: colors.bg,
+          padding: "60px 72px 56px",
+          backgroundColor: colors.bg,
+          backgroundImage: "radial-gradient(circle at 100% 0%, rgba(125, 139, 255, 0.24), transparent 55%)",
           color: colors.fg,
           fontFamily: "Archivo",
         }}
@@ -60,7 +66,7 @@ export function renderOgImage({ eyebrow, title, description }: OgImageProps) {
             style={{
               marginTop: 20,
               fontFamily: "Archivo Expanded",
-              fontSize: title.length > 14 ? 76 : 104,
+              fontSize: title.length > 14 ? 76 : 100,
               lineHeight: 0.92,
               letterSpacing: "-0.03em",
               textTransform: "uppercase",
@@ -68,7 +74,7 @@ export function renderOgImage({ eyebrow, title, description }: OgImageProps) {
           >
             {title}
           </div>
-          <div style={{ marginTop: 32, maxWidth: 1000, fontSize: 40, lineHeight: 1.25, color: colors.fg }}>
+          <div style={{ marginTop: 28, maxWidth: 1000, fontSize: 36, lineHeight: 1.25, color: colors.fg }}>
             {description}
           </div>
         </div>
@@ -78,17 +84,36 @@ export function renderOgImage({ eyebrow, title, description }: OgImageProps) {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            borderTop: `3px solid ${colors.fg}`,
+            borderTop: `2px solid ${colors.line}`,
             paddingTop: 28,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div style={{ width: 14, height: 14, borderRadius: 7, background: colors.accent }} />
-            <div style={{ fontFamily: "Archivo Expanded", fontSize: 26, textTransform: "uppercase" }}>
-              {profile.name}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ width: 14, height: 14, borderRadius: 7, background: colors.accent }} />
+              <div style={{ fontSize: 26 }}>{profile.openToWork ? "Open to full-time roles" : profile.name}</div>
+            </div>
+            <div style={{ fontFamily: "JetBrains Mono", fontSize: 22, color: colors.muted }}>
+              {`${site.url.host}${cta.path}`}
             </div>
           </div>
-          <div style={{ fontFamily: "JetBrains Mono", fontSize: 22, color: colors.muted }}>{site.url.host}</div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 18,
+              padding: "22px 32px",
+              borderRadius: 6,
+              background: colors.accent,
+              color: colors.bg,
+            }}
+          >
+            <div style={{ fontFamily: "Archivo Expanded", fontSize: 26, textTransform: "uppercase" }}>{cta.label}</div>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={colors.bg} strokeWidth="3" strokeLinecap="square">
+              <path d="M4 12h15M13 5l7 7-7 7" />
+            </svg>
+          </div>
         </div>
       </div>
     ),
