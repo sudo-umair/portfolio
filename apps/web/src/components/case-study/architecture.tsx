@@ -13,7 +13,11 @@ export function Architecture({ data }: { data: ArchitectureData }) {
         style={{ gridTemplateColumns: `repeat(${data.tiers.length}, minmax(0, 1fr))` }}
       >
         {data.tiers.map((tier, index) => (
-          <li key={tier.label} className="col-span-full flex flex-col gap-2 lg:col-span-1 lg:flex-row">
+          <li
+            key={tier.label}
+            className="col-span-full flex flex-col gap-2 reveal-on-scroll lg:col-span-1 lg:flex-row lg:[--i:var(--tier)]"
+            style={{ "--tier": index } as React.CSSProperties}
+          >
             <div className="flex flex-1 flex-col gap-2 border border-line bg-surface p-3">
               <p className="font-mono text-label uppercase text-muted">{tier.label}</p>
               <ul className="flex flex-col gap-2">

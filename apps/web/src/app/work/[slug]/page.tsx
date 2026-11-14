@@ -54,7 +54,7 @@ async function CaseStudy({ params }: Pick<PageProps<"/work/[slug]">, "params">) 
           </ViewTransition>
           <p className="mt-6 max-w-[40ch] text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug">{project.summary}</p>
 
-          <dl className="mt-12 grid gap-x-10 gap-y-6 border-y-2 border-fg py-8 sm:grid-cols-2 lg:grid-cols-[repeat(4,auto)_minmax(0,1fr)]">
+          <dl className="mt-12 grid gap-x-10 gap-y-6 rule-y py-8 motion-safe:animate-rule-draw motion-safe:[animation-delay:150ms] sm:grid-cols-2 lg:grid-cols-[repeat(4,auto)_minmax(0,1fr)]">
             <Meta label="Role">{project.role}</Meta>
             {project.client && <Meta label="Client">{project.client}</Meta>}
             <Meta label="Platforms">{platforms}</Meta>
@@ -119,7 +119,7 @@ async function CaseStudy({ params }: Pick<PageProps<"/work/[slug]">, "params">) 
         )}
       </article>
 
-      <nav aria-label="Next project" className="border-t border-line">
+      <nav aria-label="Next project" className="rule-t rule-thin rule-on-scroll">
         <Link
           href={`/work/${next.slug}`}
           prefetch

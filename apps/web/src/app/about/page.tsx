@@ -15,7 +15,7 @@ export default function AboutPage() {
         <p className="font-mono text-label uppercase text-muted">About</p>
         <h1 className="mt-3 font-wide text-h1 font-extrabold uppercase">{profile.name}</h1>
 
-        <div className="mt-10 grid gap-10 border-t-2 border-fg pt-10 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] md:gap-16">
+        <div className="mt-10 grid gap-10 rule-t pt-10 motion-safe:animate-rule-draw motion-safe:[animation-delay:150ms] md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] md:gap-16">
           <p className="max-w-[46ch] text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug">{profile.bio}</p>
           <dl className="grid grid-cols-2 gap-x-8 gap-y-5 text-small md:grid-cols-1">
             {current && <Fact label="Currently">{`${current.title}, ${current.org}`}</Fact>}
@@ -31,7 +31,7 @@ export default function AboutPage() {
           {experience.map((job) => (
             <li
               key={`${job.org}-${job.start}`}
-              className="grid gap-3 border-t border-line py-8 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-16"
+              className="grid gap-3 rule-t rule-thin rule-on-scroll py-8 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-16"
             >
               <div className="flex flex-col gap-1">
                 <p className="font-mono text-label uppercase text-muted">{formatRange(job.start, job.end)}</p>
@@ -89,7 +89,7 @@ export default function AboutPage() {
           {education.map((school) => (
             <li
               key={school.institution}
-              className="grid gap-3 border-t border-line py-8 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-16"
+              className="grid gap-3 rule-t rule-thin rule-on-scroll py-8 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-16"
             >
               <div className="flex flex-col gap-1">
                 <p className="font-mono text-label uppercase text-muted">{formatRange(school.start, school.end)}</p>
@@ -112,7 +112,7 @@ export default function AboutPage() {
         </ul>
       </Section>
 
-      <section aria-label="Get in touch" className="border-t-2 border-fg">
+      <section aria-label="Get in touch" className="rule-t rule-on-scroll">
         <div className="page-gutter flex flex-col gap-6 py-14 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-semiwide text-h2 font-bold uppercase">Let&apos;s talk</p>
           <div className="flex flex-wrap gap-3">

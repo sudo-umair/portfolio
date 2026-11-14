@@ -28,7 +28,7 @@ export function Hero() {
         ))}
       </h1>
 
-      <div className="mt-10 grid gap-8 border-b-2 border-fg pb-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-16">
+      <div className="mt-10 grid gap-8 rule-b pb-10 motion-safe:animate-rule-draw motion-safe:[animation-delay:250ms] md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-16">
         <div className="flex flex-col gap-8 motion-safe:animate-hero-fade motion-safe:[animation-delay:300ms]">
           <p className="max-w-[34ch] text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug">{profile.headline}</p>
 

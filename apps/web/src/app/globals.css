@@ -105,6 +105,7 @@
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
   --animate-hero-rise: hero-rise 0.9s var(--ease-out-quint) both;
   --animate-hero-fade: hero-fade 0.7s var(--ease-out-quint) both;
+  --animate-rule-draw: rule-draw 0.9s var(--ease-out-quint) both;
 
   /* A word rises from behind the clip edge of its line. */
   @keyframes hero-rise {
@@ -118,6 +119,18 @@
       transform: translateY(0.75rem);
     }
   }
+  @keyframes rule-draw {
+    from {
+      --rule-progress: 0%;
+    }
+  }
+}
+
+/* Registered so it interpolates; the rule-* utilities draw their lines this wide. */
+@property --rule-progress {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
 }
 
 @layer base {
@@ -215,6 +228,64 @@
 
 @utility font-semiwide {
   font-stretch: 112%;
+}
+
+/*
+ * Rules (the 2px ink lines) painted as backgrounds instead of borders, so
+ * they can draw in from the left. The transparent border keeps the layout
+ * identical to border-*-2. Without animation they're simply full width.
+ */
+@utility rule-t {
+  border-top: var(--rule-width, 2px) solid transparent;
+  background: linear-gradient(var(--rule-color, var(--fg)) 0 0) left top / var(--rule-progress) var(--rule-width, 2px)
+    no-repeat border-box;
+}
+
+@utility rule-b {
+  border-bottom: var(--rule-width, 2px) solid transparent;
+  background: linear-gradient(var(--rule-color, var(--fg)) 0 0) left bottom / var(--rule-progress)
+    var(--rule-width, 2px) no-repeat border-box;
+}
+
+@utility rule-y {
+  border-block: var(--rule-width, 2px) solid transparent;
+  background:
+    linear-gradient(var(--rule-color, var(--fg)) 0 0) left top / var(--rule-progress) var(--rule-width, 2px) no-repeat
+      border-box,
+    linear-gradient(var(--rule-color, var(--fg)) 0 0) left bottom / var(--rule-progress) var(--rule-width, 2px)
+      no-repeat border-box;
+}
+
+/* Hairline variant for list dividers. */
+@utility rule-thin {
+  --rule-width: 1px;
+  --rule-color: var(--line);
+}
+
+/*
+ * Scroll-driven reveals for content below the fold. Above-the-fold rules use
+ * the time-based animate-rule-draw instead: a view() timeline would already
+ * be finished on load. Unsupported browsers and reduced motion get static content.
+ */
+@utility rule-on-scroll {
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: rule-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+  }
+}
+
+/* Set --i on each item to stagger siblings that enter together. */
+@utility reveal-on-scroll {
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: hero-fade linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--i, 0) * 12%) entry calc(70% + var(--i, 0) * 12%);
+    }
+  }
 }
 
 @utility page-gutter {
