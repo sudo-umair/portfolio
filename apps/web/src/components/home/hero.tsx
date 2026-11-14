@@ -13,16 +13,23 @@ export function Hero() {
       </p>
 
       {/* One word per line: the name is the page's thesis in the Index layout. */}
+      {/*
+       * Each word rises from behind its own line's bottom edge. Clipping with
+       * clip-path (not overflow) leaves room above and to the sides for the
+       * tight 0.86 line height.
+       */}
       <h1 id="hero-title" className="mt-5 font-wide text-display uppercase">
-        {profile.name.split(" ").map((word) => (
-          <span key={word} className="block">
-            {word}
+        {profile.name.split(" ").map((word, index) => (
+          <span key={word} className="block [clip-path:inset(-0.25em_-0.25em_0_-0.25em)]">
+            <span className="block motion-safe:animate-hero-rise" style={{ animationDelay: `${index * 90}ms` }}>
+              {word}
+            </span>
           </span>
         ))}
       </h1>
 
       <div className="mt-10 grid gap-8 border-b-2 border-fg pb-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-16">
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 motion-safe:animate-hero-fade motion-safe:[animation-delay:300ms]">
           <p className="max-w-[34ch] text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug">{profile.headline}</p>
 
           <div className="flex flex-wrap gap-3">
@@ -42,7 +49,7 @@ export function Hero() {
           </div>
         </div>
 
-        <dl className="grid grid-cols-2 gap-x-10 gap-y-5 text-small md:grid-cols-1">
+        <dl className="grid grid-cols-2 gap-x-10 gap-y-5 text-small motion-safe:animate-hero-fade motion-safe:[animation-delay:400ms] md:grid-cols-1">
           {current && (
             <Fact label="Currently">
               {current.title}

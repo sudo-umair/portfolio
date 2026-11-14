@@ -101,8 +101,23 @@
   --container-page: 76rem;
   --container-prose: 40rem;
 
-  /* Motion */
+  /* Motion. Only used behind motion-safe:, so reduced-motion users never see them. */
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-hero-rise: hero-rise 0.9s var(--ease-out-quint) both;
+  --animate-hero-fade: hero-fade 0.7s var(--ease-out-quint) both;
+
+  /* A word rises from behind the clip edge of its line. */
+  @keyframes hero-rise {
+    from {
+      transform: translateY(105%);
+    }
+  }
+  @keyframes hero-fade {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+  }
 }
 
 @layer base {
