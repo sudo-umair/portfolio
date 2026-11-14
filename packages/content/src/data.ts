@@ -415,6 +415,15 @@ export const projectsData: z.input<typeof projectSchema>[] = [
         caption: "Follow a masjid; its times are saved for offline use.",
       },
       {
+        src: "/work/salathub/admin-theme-editor.mp4",
+        poster: "/work/salathub/admin-theme-editor-poster.webp",
+        alt: "The admin console's theme editor switching a display between table, cards and spotlight layouts, into Urdu and Arabic, and to a new background.",
+        device: "browser",
+        width: 1280,
+        height: 800,
+        caption: "Each screen gets its own theme, previewed live: layout, language, background and fonts.",
+      },
+      {
         src: "/work/salathub/alkhairia-map.mp4",
         poster: "/work/salathub/alkhairia-map-poster.webp",
         alt: "Panning a map of masjids around Islamabad and Rawalpindi and opening one.",
@@ -424,6 +433,14 @@ export const projectsData: z.input<typeof projectSchema>[] = [
         caption: "Nearby masjids on a map.",
       },
       {
+        src: "/work/salathub/admin-prayer-timings.webp",
+        alt: "The admin console's prayer times table for November.",
+        device: "browser",
+        width: 1440,
+        height: 900,
+        caption: "Admin console: the month's prayer times, calculated or adjusted per masjid.",
+      },
+      {
         src: "/work/salathub/alkhairia-feed.mp4",
         poster: "/work/salathub/alkhairia-feed-poster.webp",
         alt: "Scrolling a masjid's feed of hadith posts.",
@@ -431,6 +448,14 @@ export const projectsData: z.input<typeof projectSchema>[] = [
         width: 540,
         height: 1200,
         caption: "Posts from followed masjids.",
+      },
+      {
+        src: "/work/salathub/admin-designer.webp",
+        alt: "The slide designer showing Surah Al-Fatihah 1:1 in Arabic with Urdu and English translations.",
+        device: "browser",
+        width: 1440,
+        height: 900,
+        caption: "Ayat and hadith slides designed in the browser, with translations.",
       },
       {
         src: "/work/salathub/alkhairia-settings.webp",
