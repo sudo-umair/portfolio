@@ -479,7 +479,9 @@ export const projectsData: z.input<typeof projectSchema>[] = [
     summary:
       "Full-stack email marketing platform for contacts, campaigns and engagement tracking, sending through a self-hosted Postal mail server, with Stripe billing.",
     platforms: ["web", "api"],
+    client: "Hackta",
     role: "Sole developer (freelance)",
+    period: { start: "2026-02", end: "2026-05" },
     stack: [
       "React 19",
       "TanStack Query",
@@ -500,6 +502,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       "Custom sending domains with DKIM provisioned on self-hosted Postal, and DNS checks that do not flap.",
       "Stripe Checkout, Customer Portal and idempotent webhooks, deployed to AWS with GitHub Actions.",
     ],
+    links: [{ label: "Mailcamp website", href: "https://mailcamp.ai" }],
     architecture: {
       summary:
         "One Express API on Bun serves the app, the tracking endpoints and the webhooks, and runs scheduled jobs in-process. Postgres is the only coordination layer: there is no Redis, queue or separate worker.",
