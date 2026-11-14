@@ -63,7 +63,7 @@ test.describe("layout", () => {
     expect(await columnCount(page.locator("main header .grid").first())).toBe(isMobile ? 1 : 2);
 
     await page.goto("/work/curevision");
-    expect(await columnCount(page.locator("article header dl"))).toBe(isMobile ? 1 : 5);
+    expect(await columnCount(page.locator("article header dl"))).toBe(isMobile ? 1 : 4);
   });
 });
 

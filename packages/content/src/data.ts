@@ -40,7 +40,9 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       "Beyond Presence turns AI agents into hyper-realistic video avatars you can talk to in real time. I was the main frontend engineer for two years: I rebuilt Studio, the dashboard where customers create avatars and agents, built most of the browser call app, and built the Bey design system both of them use.",
     platforms: ["web"],
     client: "Beyond Presence, Munich",
-    role: "Lead frontend engineer (Codejunkie)",
+    via: "Codejunkie",
+    role: "Lead frontend engineer",
+    period: { start: "2024-08" },
     stack: [
       "React 19",
       "TypeScript",
@@ -160,7 +162,8 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       "cureVision is an MDR-certified handheld wound scanner: a custom Android device with a depth camera, a custom flash and a temperature sensor, running a React Native app I led. Clinicians scan a chronic wound and get 3D measurements and on-device AI tissue analysis, synced to the cureVision web platform. The product won the Health-i-Award 2023 and a Bavarian Innovation Award 2024.",
     platforms: ["android"],
     client: "cureVision GmbH, Munich",
-    role: "Lead React Native developer (Codejunkie)",
+    via: "Codejunkie",
+    role: "Lead React Native developer",
     stack: [
       "React Native",
       "TypeScript",
@@ -261,7 +264,9 @@ export const projectsData: z.input<typeof projectSchema>[] = [
     summary:
       "Mosque management platform (formerly PrayerBox): a web console for masjid admins, full-screen prayer-time displays that run 24/7 on old TV boxes, the SalatHub TV app, and the Alkhairia mobile app for worshippers. Both apps are on Google Play.",
     platforms: ["web", "android", "android-tv"],
+    via: "Codejunkie",
     role: "Lead developer",
+    period: { start: "2024-04" },
     stack: [
       "React 19",
       "TypeScript",
@@ -377,7 +382,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
     summary:
       "Full-stack email marketing platform for contacts, campaigns and engagement tracking, sending through a self-hosted Postal mail server, with Stripe billing.",
     platforms: ["web", "api"],
-    role: "Sole developer",
+    role: "Sole developer (freelance)",
     stack: [
       "React 19",
       "TanStack Query",
@@ -484,7 +489,7 @@ export const experienceData: z.input<typeof experienceSchema>[] = [
       "Cut load times by 30% and improved Lighthouse scores across apps.",
       "Mentored 3+ junior developers and ran 100+ code reviews.",
     ],
-    projects: ["beyond-presence"],
+    projects: ["beyond-presence", "salathub"],
   },
   {
     title: "React Native Engineer",
@@ -508,7 +513,7 @@ export const experienceData: z.input<typeof experienceSchema>[] = [
       "Delivered 15+ full-stack web and mobile apps for clients across industries.",
       "APIs and backends, plus React, React Native and Next.js frontends.",
     ],
-    projects: [],
+    projects: ["mailcamp"],
   },
 ];
 

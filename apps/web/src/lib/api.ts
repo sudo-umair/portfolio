@@ -45,6 +45,8 @@ export function projectDetail(project: Project) {
   return {
     ...projectSummary(project),
     client: project.client ?? null,
+    via: project.via ?? null,
+    period: project.period ? { start: project.period.start, end: project.period.end ?? null } : null,
     highlights: project.highlights,
     architecture: project.architecture ?? null,
     decisions: project.decisions,
@@ -99,6 +101,9 @@ export function jsonResume() {
       highlights: project.highlights,
       keywords: project.stack,
       roles: [project.role],
+      ...(project.period ? { startDate: project.period.start } : {}),
+      ...(project.period?.end ? { endDate: project.period.end } : {}),
+      ...(project.via ? { entity: project.via } : {}),
       url: absolute(`/work/${project.slug}`),
     })),
     meta: {

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getProject, platformLabels, projects } from "@portfolio/content";
 import { Architecture } from "@/components/case-study/architecture";
 import { Decisions } from "@/components/case-study/decisions";
+import { formatRange } from "@/lib/dates";
 import { pageMetadata } from "@/lib/metadata";
 import { projectTitleTransition } from "@/lib/transitions";
 
@@ -54,10 +55,17 @@ async function CaseStudy({ params }: Pick<PageProps<"/work/[slug]">, "params">) 
           </ViewTransition>
           <p className="mt-6 max-w-[40ch] text-[clamp(1.25rem,2.2vw,1.75rem)] leading-snug">{project.summary}</p>
 
-          <dl className="mt-12 grid gap-x-10 gap-y-6 rule-y py-8 motion-safe:animate-rule-draw motion-safe:[animation-delay:150ms] sm:grid-cols-2 lg:grid-cols-[repeat(4,auto)_minmax(0,1fr)]">
+          <dl className="mt-12 grid gap-x-10 gap-y-6 rule-y py-8 motion-safe:animate-rule-draw motion-safe:[animation-delay:150ms] sm:grid-cols-2 lg:grid-cols-4">
             <Meta label="Role">{project.role}</Meta>
-            {project.client && <Meta label="Client">{project.client}</Meta>}
-            <Meta label="Platforms">{platforms}</Meta>
+            {project.client ? (
+              <Meta label="Client">
+                {project.client}
+                {project.via && <span className="block font-normal text-muted">via {project.via}</span>}
+              </Meta>
+            ) : (
+              project.via && <Meta label="Via">{project.via}</Meta>
+            )}
+            {project.period && <Meta label="Period">{formatRange(project.period.start, project.period.end)}</Meta>}
             {project.links.length > 0 && (
               <Meta label="Links">
                 <ul className="flex flex-col gap-1">
@@ -73,7 +81,7 @@ async function CaseStudy({ params }: Pick<PageProps<"/work/[slug]">, "params">) 
                 </ul>
               </Meta>
             )}
-            <Meta label="Stack" className="sm:col-span-full lg:col-span-1">
+            <Meta label="Stack" className="col-span-full border-t border-line pt-6">
               <ul className="flex flex-wrap gap-1.5">
                 {project.stack.map((tech) => (
                   <li key={tech} className="border border-line px-2 py-0.5 text-small">

@@ -61,7 +61,16 @@ export const projectSchema = z.object({
   /** Also decides which device frames a case study uses. */
   platforms: z.array(platformSchema).min(1),
   client: z.string().optional(),
+  /** Agency or employer the work was done through, e.g. "Codejunkie". */
+  via: z.string().optional(),
   role: z.string(),
+  /** When I worked on it. Omitted `end` means "present". */
+  period: z
+    .object({
+      start: z.string().regex(/^\d{4}-\d{2}$/),
+      end: z.string().regex(/^\d{4}-\d{2}$/).optional(),
+    })
+    .optional(),
   stack: z.array(z.string()).min(1),
   highlights: z.array(z.string()).min(1),
   links: z.array(linkSchema).default([]),
