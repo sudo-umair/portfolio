@@ -18,7 +18,7 @@ const imageSizes = {
 
 export function MediaGallery({ media }: { media: Media[] }) {
   return (
-    <ul className="flex flex-wrap items-end gap-x-8 gap-y-12">
+    <ul className="flex flex-wrap items-start gap-x-8 gap-y-12">
       {media.map((item, index) => (
         <li
           key={`${index}-${item.src}`}

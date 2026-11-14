@@ -3,25 +3,39 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * A muted, looping recording. People who prefer reduced motion get it paused
- * on its poster with controls, so it only plays if they choose to.
+ * A muted, looping recording that only plays while it is on screen, so a
+ * gallery of them doesn't download and decode everything at once. People who
+ * prefer reduced motion get it paused on its poster, with controls.
  */
 export function AutoplayVideo({ src, poster, label }: { src: string; poster?: string; label: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const apply = () => {
-      setReduced(query.matches);
-      const video = ref.current;
-      if (!video) return;
-      if (query.matches) video.pause();
-      else video.play().catch(() => {});
+    const video = ref.current;
+    if (!video) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let visible = false;
+
+    const sync = () => {
+      setReduced(motion.matches);
+      if (visible && !motion.matches) video.play().catch(() => {});
+      else video.pause();
     };
-    apply();
-    query.addEventListener("change", apply);
-    return () => query.removeEventListener("change", apply);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry?.isIntersecting ?? false;
+        sync();
+      },
+      { threshold: 0.25 },
+    );
+    observer.observe(video);
+    motion.addEventListener("change", sync);
+    return () => {
+      observer.disconnect();
+      motion.removeEventListener("change", sync);
+    };
   }, []);
 
   return (
@@ -33,7 +47,7 @@ export function AutoplayVideo({ src, poster, label }: { src: string; poster?: st
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="none"
       controls={reduced}
       className="block h-auto w-full"
     />
