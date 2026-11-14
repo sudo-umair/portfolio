@@ -108,6 +108,8 @@
     text-rendering: optimizeLegibility;
     /* Keep anchor targets clear of the sticky header (3.5rem) plus breathing room. */
     scroll-padding-top: 5rem;
+    /* In-page anchors glide; data-scroll-behavior on <html> keeps route changes instant. */
+    scroll-behavior: smooth;
   }
 
   body {
