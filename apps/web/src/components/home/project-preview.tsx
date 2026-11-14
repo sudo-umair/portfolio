@@ -1,16 +1,36 @@
-import { platformLabels, projectDevices, type Project } from "@portfolio/content";
+import Image from "next/image";
+import { isVideo, platformLabels, projectDevices, type Project } from "@portfolio/content";
+import { DeviceFrame } from "@/components/device-frame";
 
 /**
- * Placeholder preview art drawn from tokens, using the project's most
- * distinctive device (TV, phone, then browser). Swap for real screenshots
- * once projects have media.
+ * The project's first screenshot in its device frame, or placeholder art
+ * drawn from tokens when it has none yet (TV, phone, then browser).
+ * Recordings use their poster, so a hover preview never starts a video.
  */
 export function ProjectPreview({ project }: { project: Project }) {
-  const device = projectDevices(project)[0];
+  const shot = project.media.find((m) => !isVideo(m) || m.poster);
+  const device = shot?.device ?? projectDevices(project)[0];
   return (
     <div className="flex h-full w-full flex-col justify-between gap-4 bg-surface p-5">
-      <div className="flex flex-1 items-center justify-center">
-        {device === "browser" ? <BrowserFrame /> : <PhoneFrame tv={device === "tv"} />}
+      <div className="flex min-h-0 flex-1 items-center justify-center">
+        {shot ? (
+          <div className={device === "phone" ? "w-[64px]" : "w-[82%]"}>
+            <DeviceFrame device={device} compact>
+              <Image
+                src={isVideo(shot) ? shot.poster! : shot.src}
+                alt=""
+                width={shot.width}
+                height={shot.height}
+                sizes="240px"
+                className="block h-auto w-full"
+              />
+            </DeviceFrame>
+          </div>
+        ) : device === "browser" ? (
+          <BrowserArt />
+        ) : (
+          <PhoneArt tv={device === "tv"} />
+        )}
       </div>
       <div>
         <p className="font-semiwide text-small font-bold uppercase">{project.name}</p>
@@ -22,7 +42,7 @@ export function ProjectPreview({ project }: { project: Project }) {
   );
 }
 
-function PhoneFrame({ tv }: { tv: boolean }) {
+function PhoneArt({ tv }: { tv: boolean }) {
   if (tv) {
     return (
       <div className="flex w-[78%] flex-col items-center gap-1">
@@ -38,7 +58,7 @@ function PhoneFrame({ tv }: { tv: boolean }) {
   );
 }
 
-function BrowserFrame() {
+function BrowserArt() {
   return (
     <div className="w-[82%] overflow-hidden rounded-md border-2 border-fg">
       <div className="flex gap-1 border-b-2 border-fg bg-bg px-2 py-1.5">

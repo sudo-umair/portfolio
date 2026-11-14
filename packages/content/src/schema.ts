@@ -42,14 +42,25 @@ export const decisionSchema = z.object({
   solution: z.string(),
 });
 
-/** Screenshot or recording shown in a device frame. Files live in apps/web/public. */
+/**
+ * Screenshot or recording shown in a device frame. Files live in
+ * apps/web/public; a .mp4 or .webm `src` plays as a muted loop.
+ */
 export const mediaSchema = z.object({
-  src: z.string().startsWith("/"),
+  src: z.string().regex(/^\/.+\.(png|jpe?g|webp|avif|mp4|webm)$/),
   alt: z.string(),
   device: z.enum(["phone", "tv", "browser"]),
+  /** Intrinsic size of the file, for the aspect ratio. */
   width: z.number().int().positive(),
   height: z.number().int().positive(),
+  caption: z.string().optional(),
+  /** First frame for a recording, shown while it loads. */
+  poster: z.string().startsWith("/").optional(),
 });
+
+export function isVideo(media: { src: string }) {
+  return /\.(mp4|webm)$/.test(media.src);
+}
 
 export const projectSchema = z.object({
   slug: z.string().regex(/^[a-z0-9-]+$/),

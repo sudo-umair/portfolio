@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getProject, platformLabels, projects } from "@portfolio/content";
 import { Architecture } from "@/components/case-study/architecture";
 import { Decisions } from "@/components/case-study/decisions";
+import { MediaGallery } from "@/components/case-study/media-gallery";
 import { formatRange } from "@/lib/dates";
 import { pageMetadata } from "@/lib/metadata";
 import { projectTitleTransition } from "@/lib/transitions";
@@ -107,6 +108,15 @@ async function CaseStudy({ params }: Pick<PageProps<"/work/[slug]">, "params">) 
             </ul>
           </div>
         </section>
+
+        {project.media.length > 0 && (
+          <section aria-labelledby="screens-title" className="page-gutter pb-20">
+            <h2 id="screens-title" className="mb-8 font-semiwide text-h2 font-bold uppercase">
+              Screens
+            </h2>
+            <MediaGallery media={project.media} />
+          </section>
+        )}
 
         {project.architecture && (
           <section aria-labelledby="architecture-title" className="page-gutter pb-20">

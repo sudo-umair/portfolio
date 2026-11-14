@@ -20,6 +20,8 @@
   --accent: #2337ff;
   --accent-fg: #ffffff;
   --danger: #c4231c;
+  /* Device frames around screenshots: dark hardware in both themes, a step above the page in dark. */
+  --bezel: #0b0b0c;
   color-scheme: light;
 }
 
@@ -33,6 +35,7 @@
     --accent: #7d8bff;
     --accent-fg: #0c0d10;
     --danger: #ff7b72;
+    --bezel: #2b2d35;
     color-scheme: dark;
   }
 }
@@ -46,6 +49,7 @@
   --accent: #7d8bff;
   --accent-fg: #0c0d10;
   --danger: #ff7b72;
+  --bezel: #2b2d35;
   color-scheme: dark;
 }
 
@@ -59,6 +63,7 @@
   --color-accent: var(--accent);
   --color-accent-fg: var(--accent-fg);
   --color-danger: var(--danger);
+  --color-bezel: var(--bezel);
 
   /* Fonts (CSS variables come from next/font in layout.tsx) */
   --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
