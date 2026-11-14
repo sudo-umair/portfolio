@@ -23,7 +23,10 @@ export function MediaGallery({ media }: { media: Media[] }) {
         <li
           key={`${index}-${item.src}`}
           className={`reveal-on-scroll ${itemWidth[item.device]}`}
-          style={{ "--i": index } as React.CSSProperties}
+          // Each item reveals on its own view() timeline, so the stagger only matters
+          // between neighbours entering together. A global index pushes later items'
+          // animation-range past full entry and they never reach full opacity.
+          style={{ "--i": index % 3 } as React.CSSProperties}
         >
           <figure className="flex flex-col gap-3">
             <DeviceFrame device={item.device}>
