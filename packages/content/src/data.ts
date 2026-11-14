@@ -492,6 +492,7 @@ export const experienceData: z.input<typeof experienceSchema>[] = [
     highlights: [
       "Building production web platforms for clients such as Beyond Presence (AI avatars) and Frontline Global (travel safety).",
       "Full-stack features on Supabase and Firebase: auth, PostgreSQL, storage and real-time sync.",
+      "Integrated Pakistan's FBR digital invoicing API into BetterBooks, an AI bookkeeping app: sandbox scenario testing, invoice validation and submission, and tax-rate and SRO lookups.",
       "Cut load times by 30% and improved Lighthouse scores across apps.",
       "Mentored 3+ junior developers and ran 100+ code reviews.",
     ],
@@ -506,6 +507,7 @@ export const experienceData: z.input<typeof experienceSchema>[] = [
     highlights: [
       "Shipped 3+ React Native apps with thousands of users, including cureVision, an MDR-certified wound scanner.",
       "Native modules for a 3D camera, temperature sensor hardware and on-device ML.",
+      "Built Equal Access, an accessibility-first React Native app for people with disabilities in Pakistan, in four languages with right-to-left layouts and adjustable text size.",
       "Offline-first data flows with Redux and Zustand; 20+ features shipped and 200+ bugs fixed.",
     ],
     projects: ["curevision"],
