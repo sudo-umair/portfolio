@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /** No page should ever scroll sideways. */
 async function expectNoHorizontalScroll(page: Page) {
@@ -43,6 +43,52 @@ test.describe("about", () => {
       "page",
     );
     await expectNoHorizontalScroll(page);
+  });
+});
+
+/** Tracks in a grid's resolved columns; an element with no column template counts as one. */
+async function columnCount(locator: Locator) {
+  const columns = await locator.evaluate((el) => getComputedStyle(el).gridTemplateColumns);
+  return columns === "none" ? 1 : columns.split(" ").length;
+}
+
+// A malformed class list (e.g. two classes glued together) silently drops a
+// responsive layout class, so check the key grids actually resolve.
+test.describe("layout", () => {
+  test("header grids use their responsive columns", async ({ page, isMobile }) => {
+    await page.goto("/");
+    expect(await columnCount(page.locator("#hero-title + div"))).toBe(isMobile ? 1 : 2);
+
+    await page.goto("/about");
+    expect(await columnCount(page.locator("main header .grid").first())).toBe(isMobile ? 1 : 2);
+
+    await page.goto("/work/curevision");
+    expect(await columnCount(page.locator("article header dl"))).toBe(isMobile ? 1 : 5);
+  });
+});
+
+test.describe("hero intro", () => {
+  test("plays on load but not when returning to the homepage", async ({ page }) => {
+    /** Play states of the two name-word animations, e.g. ["running", "finished"]. */
+    const heroRises = () =>
+      page.evaluate(() =>
+        document
+          .getAnimations()
+          .filter((a) => (a as CSSAnimation).animationName === "hero-rise")
+          .map((a) => a.playState),
+      );
+
+    await page.goto("/");
+    expect(await heroRises()).toHaveLength(2);
+    await expect.poll(async () => (await heroRises()).includes("running")).toBe(false);
+
+    await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "About" }).click();
+    await expect(page).toHaveURL(/\/about$/);
+    await page.getByRole("link", { name: "Muhammad Umair, home" }).click();
+    // The hero's own id: the About page's h1 would match a generic heading query.
+    await expect(page.locator("#hero-title")).toBeVisible();
+    // A replay would show up as fresh, running animations.
+    expect(await heroRises()).not.toContain("running");
   });
 });
 
