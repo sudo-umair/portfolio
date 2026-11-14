@@ -37,15 +37,117 @@ export const projectsData: z.input<typeof projectSchema>[] = [
     name: "Beyond Presence",
     tagline: "Real-time AI avatar platform",
     summary:
-      "Web platform for hyper-realistic conversational AI video agents with sub-second latency. I built the dashboard, the agent creation flows and the live call experience.",
+      "Beyond Presence turns AI agents into hyper-realistic video avatars you can talk to in real time. I was the main frontend engineer for two years: I rebuilt Studio, the dashboard where customers create avatars and agents, built most of the browser call app, and built the Bey design system both of them use.",
     platforms: ["web"],
-    client: "Beyond Presence",
-    role: "Full stack engineer (Codejunkie)",
-    stack: ["React", "TypeScript", "TanStack Query", "Zustand", "LiveKit / WebRTC", "Storybook", "Playwright"],
+    client: "Beyond Presence, Munich",
+    role: "Lead frontend engineer (Codejunkie)",
+    stack: [
+      "React 19",
+      "TypeScript",
+      "Vite",
+      "TanStack Query",
+      "Zustand",
+      "React Router 7",
+      "Tailwind CSS",
+      "LiveKit / WebRTC",
+      "MediaPipe",
+      "WebGL2",
+      "Firebase Auth",
+      "Storybook",
+      "Style Dictionary",
+      "Playwright",
+      "Sentry",
+    ],
     highlights: [
-      "Dashboard and agent creation flows covering avatars, voices, behavior and deployment settings.",
-      "Live avatar calls over LiveKit / WebRTC with low-latency sessions and in-call controls.",
-      "Reusable component library in Storybook and a Playwright suite with 90%+ coverage.",
+      "Rewrote Studio from React 18 and Redux into a feature-sliced React 19 app: 26 routes, 17 feature modules, about 87% of today's code by line.",
+      "Studio covers avatar creation from a training video or a photo, agents with custom LLMs or ElevenLabs agents, a knowledge base, conversation insights, text-to-video, analytics, Stripe billing, API keys, webhooks and TOTP MFA.",
+      "Call app on LiveKit with session, credit and idle limits, live device switching, per-customer white-label themes and an iframe embed that reports call events to the host page.",
+      "Branded backgrounds behind the avatar, replaced in the browser in real time with MediaPipe segmentation and a WebGL2 compositor.",
+      "Bey design system: 67 components and about 300 Storybook stories, light and dark modes from Figma tokens, published to npm over 170 times.",
+      "About 45 Playwright tests for Studio, plus a real end-to-end call test that runs against production about 14 times a day.",
+    ],
+    links: [{ label: "Beyond Presence website", href: "https://www.beyondpresence.ai" }],
+    architecture: {
+      summary:
+        "I owned the three frontend pieces. Studio and the call app share one API and one design system. The call app never streams video from our servers directly: the API gives it a LiveKit token whose room config dispatches both the conversation agent and a GPU avatar worker into the same room.",
+      tiers: [
+        {
+          label: "Frontends",
+          nodes: [
+            { name: "Studio", detail: "React 19 SPA on Firebase Hosting. Avatars, agents, conversations, billing and settings." },
+            { name: "Call app", detail: "React and LiveKit. Shared links, iframe embeds and white-label calls for each customer." },
+            { name: "Bey design system", detail: "@beydesign/storybook and @beydesign/tokens on npm. Storybook deployed to GitHub Pages." },
+          ],
+        },
+        {
+          label: "Platform API",
+          nodes: [
+            { name: "FastAPI on Cloud Run", detail: "Versioned API for both frontends, plus the public developer API." },
+            { name: "Firebase Auth", detail: "Email, Google and TOTP MFA in Studio. Anonymous sign-in or a shared session cookie on calls." },
+            { name: "Firestore", detail: "Agents, avatars, conversations and usage." },
+          ],
+        },
+        {
+          label: "Real-time",
+          nodes: [
+            { name: "LiveKit rooms", detail: "Created by the caller's token, which dispatches an agent and an avatar into the room." },
+            { name: "Conversation agent", detail: "Speech-to-text, LLM and text-to-speech, running on LiveKit Cloud." },
+            { name: "Avatar workers", detail: "GPU workers on GKE that render the avatar's video from the agent's speech." },
+          ],
+        },
+        {
+          label: "Services",
+          nodes: [
+            { name: "Cloud Storage + Cloudflare", detail: "Training videos, previews and generated videos, behind signed URLs." },
+            { name: "Stripe", detail: "Plans, regional pricing, promo codes and pay-as-you-go credits." },
+            { name: "ElevenLabs, Recall, Mixpanel, Sentry", detail: "Bring-your-own voice agents, meeting bots, analytics and error tracking." },
+          ],
+        },
+      ],
+    },
+    decisions: [
+      {
+        title: "Avatar creation that survives a closed tab",
+        problem:
+          "Creating a custom avatar takes several steps: an upload of up to 1 GB, automated video checks, a consent recording, then training. Users close the tab halfway, and the backend can start training on its own.",
+        solution:
+          "The wizard is driven by the server's avatar state, a typed union from awaiting media to training, failed or rejected. One function maps any state back to a step, so opening an avatar's link resumes the draft where it stopped. Polling stops on its own once nothing is left to wait for. A new submission cancels any status request already in flight, so a stale response can't overwrite it.",
+      },
+      {
+        title: "Replacing the avatar's background in the browser",
+        problem:
+          "Customers wanted a branded background behind the avatar, but the avatar arrives as a finished WebRTC video stream, and changing the GPU render pipeline for one cosmetic feature was off the table.",
+        solution:
+          "The incoming video track runs through WebCodecs streams frame by frame. MediaPipe segments each frame on the GPU, and a WebGL2 shader on an OffscreenCanvas blends in the background, refining the low-resolution mask against the image so hair and collars stay clean. Every frame is closed even when one fails, the model loads on the pre-call screen, and browsers without support get the plain video.",
+      },
+      {
+        title: "One exit for every way a call ends",
+        problem:
+          "A call can end because the user hangs up, the session hits its time limit, credits run out, the user goes idle, the agent leaves or the room is wrong. Each path needs the same analytics, a host-page event and the right message.",
+        solution:
+          "The clocks for time, credits and idleness live in one call screen, and every exit goes through a single disconnect handler guarded by a ref, so it can only fire once. It records the call, posts a call-ended event to an embedding page and passes a typed reason to the post-call screen. Rejoining an ended call is blocked by checking the call ID against the room.",
+      },
+      {
+        title: "White-label calls from a few brand colours",
+        problem:
+          "Enterprise customers embed calls in their own sites with their own colours and fonts, but they supply only a palette, and the result has to stay readable.",
+        solution:
+          "The call app turns a brand palette into about 40 semantic CSS tokens at runtime. It uses luminance to pick hover shades and text colour, lifts dark accents until they're legible, and accepts only http(s) asset URLs. Because the design system styles everything through tokens, its components follow the brand automatically. Where a label must stay white on a fixed tile, it's pinned to a primitive token.",
+      },
+      {
+        title: "Dark mode without breaking light mode",
+        problem:
+          "The Figma tokens had separate light and dark colour sets, and components referenced light values directly. Two token sets also reused the same keys, so some headings quietly got the wrong line height.",
+        solution:
+          "The token build now writes one set of --color-* variables, with dark values under [data-theme=\"dark\"], and keeps the old names for existing consumers. A codemod moved 46 components onto semantic tokens whose light value is identical, so light mode stayed pixel-for-pixel the same. References now resolve within their own set first. Every token change publishes a new npm version from CI.",
+      },
+      {
+        title: "Signed URLs without re-downloading",
+        problem:
+          "Avatar previews are served from signed URLs that expire, and every API response signs them again, so the browser saw a new URL each time and re-downloaded the same videos.",
+        solution:
+          "A persisted cache keeps each URL until its own Expires time, minus a 60-second margin. A freshly signed URL for the same file, matched by origin and path, doesn't replace one that is still valid, so thumbnails and videos load once across pages and visits.",
+      },
     ],
     featured: true,
     order: 1,
