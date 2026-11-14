@@ -264,7 +264,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
     name: "SalatHub",
     tagline: "Mosque platform: web, Android and Android TV",
     summary:
-      "Mosque management platform (formerly PrayerBox): a web console for masjid admins, full-screen prayer-time displays that run 24/7 on old TV boxes, the SalatHub TV app, and the Alkhairia mobile app for worshippers. Both apps are on Google Play.",
+      "Mosque management platform (formerly PrayerBox): a web console for masjid admins, full-screen prayer-time displays that run 24/7 on masjid screens, the SalatHub TV app, and the Alkhairia mobile app for worshippers. Both apps are on Google Play.",
     platforms: ["web", "android", "android-tv"],
     client: "Alkhairia",
     via: "Codejunkie",
@@ -292,7 +292,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       "Prayer-time change alerts that compare old and new settings against the same data, after false alerts showed up in production.",
       "Alkhairia mobile app (part of SalatHub, Android): follow masjids by location, search or QR code, a combined feed, push alerts and local prayer reminders that keep working offline.",
       "SalatHub TV (Android TV): a WebView shell with D-pad focus management, network recovery and hourly OTA updates for unattended screens.",
-      "Display build targets Chrome 83 for old TV boxes and keeps showing the last good data when offline.",
+      "Displays also run on older TV boxes (back to Chrome 83) and keep showing the last good data when offline.",
     ],
     links: [
       { label: "SalatHub website", href: "https://salathub.alkhairia.org" },
@@ -367,9 +367,9 @@ export const projectsData: z.input<typeof projectSchema>[] = [
           "A dependency-free prayer engine runs in the browser and is copied into the Deno edge functions. CI fails if the copy is stale. The server also sends the masjid's own clock with every response, so the app shows correct times whatever time zone the phone is set to.",
       },
       {
-        title: "Old TV boxes, unattended",
+        title: "Screens that run unattended",
         problem:
-          "Displays run 24/7 on cheap Android boxes with old WebViews and flaky Wi-Fi, and nobody is there to restart them.",
+          "Displays run 24/7 with nobody there to restart them, and some masjids use older Android boxes with outdated WebViews and flaky Wi-Fi.",
         solution:
           "One browser floor (Chrome 83) drives both the JS and CSS fallbacks. Displays render the last good data first and keep it when a fetch fails. The TV app reloads on reconnect, can wipe the service worker from native code, and installs OTA updates within an hour without a relaunch.",
       },
