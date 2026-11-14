@@ -1,18 +1,21 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore, ViewTransition } from "react";
 import { platformLabels, type Project } from "@portfolio/content";
 import { projectTitleTransition } from "@/lib/transitions";
-import { ProjectPreview } from "./project-preview";
 
-const PREVIEW_W = 280;
-const PREVIEW_H = 210;
+/** The project's Open Graph image, kept at its 1200×630 ratio. */
+const PREVIEW_W = 320;
+const PREVIEW_H = 168;
 /** Sticky header height; the preview flips below the cursor rather than hide under it. */
 const HEADER_H = 64;
 
 export function ProjectIndex({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<string | null>(null);
+  // Fetch the previews on first hover of the list, not on page load.
+  const [primed, setPrimed] = useState(false);
   const listRef = useRef<HTMLUListElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const pointer = useRef<{ x: number; y: number } | null>(null);
@@ -90,6 +93,7 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
       <ul
         ref={listRef}
         className="group/list border-t border-line"
+        onPointerEnter={() => canHover && setPrimed(true)}
         onPointerMove={onPointerMove}
         onPointerLeave={() => setActive(null)}
       >
@@ -131,7 +135,21 @@ export function ProjectIndex({ projects }: { projects: Project[] }) {
             scale: activeProject ? "1" : "0.92",
           }}
         >
-          {activeProject && <ProjectPreview project={activeProject} />}
+          {/* All stacked and loaded together, so switching rows never shows a blank box. */}
+          {primed &&
+            projects.map((project) => (
+              <Image
+                key={project.slug}
+                src={project.preview?.src ?? `/work/${project.slug}/opengraph-image`}
+                alt=""
+                width={1200}
+                height={630}
+                sizes={`${PREVIEW_W}px`}
+                loading="eager"
+                className="absolute inset-0 size-full object-cover"
+                style={{ opacity: project.slug === active ? 1 : 0 }}
+              />
+            ))}
         </div>
       )}
     </>

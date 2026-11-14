@@ -152,6 +152,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       },
     ],
     featured: true,
+    preview: { src: "/work/beyond-presence/og.png" },
     order: 1,
   },
   {
@@ -255,6 +256,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       },
     ],
     featured: true,
+    preview: { src: "/work/curevision/og.png" },
     order: 2,
   },
   {
@@ -467,6 +469,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       },
     ],
     featured: true,
+    preview: { src: "/work/salathub/og.png" },
     order: 3,
   },
   {
@@ -567,6 +570,7 @@ export const projectsData: z.input<typeof projectSchema>[] = [
       },
     ],
     featured: true,
+    preview: { src: "/work/mailcamp/og.png" },
     order: 4,
   },
 ];

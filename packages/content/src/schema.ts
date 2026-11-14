@@ -88,6 +88,11 @@ export const projectSchema = z.object({
   architecture: architectureSchema.optional(),
   decisions: z.array(decisionSchema).default([]),
   media: z.array(mediaSchema).default([]),
+  /**
+   * The product's Open Graph image (1200×630), shown in the homepage hover
+   * preview. Falls back to the case study's generated OG image.
+   */
+  preview: z.object({ src: z.string() }).optional(),
   featured: z.boolean().default(false),
   /** Lower comes first. */
   order: z.number().int(),
