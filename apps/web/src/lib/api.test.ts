@@ -21,7 +21,7 @@ describe("projectList", () => {
 
 describe("projectDetail", () => {
   it("uses null rather than undefined for optional fields, so they survive JSON", () => {
-    const withoutClient = projects.find((p) => !p.client)!;
+    const withoutClient = { ...projects[0]!, client: undefined };
     const detail = projectDetail(withoutClient);
     expect(detail.client).toBeNull();
     expect(JSON.parse(JSON.stringify(detail))).toHaveProperty("client", null);
