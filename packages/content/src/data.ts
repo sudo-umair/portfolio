@@ -315,6 +315,21 @@ export const projectsData: z.input<typeof projectSchema>[] = [
         },
       ],
     },
+    flow: {
+      title: "One scan, end to end",
+      summary:
+        "What happens between a clinician starting a scan and the wound record reaching the web platform. Full-resolution depth data never crosses the React Native bridge: it is processed in Java, and JavaScript gets only what the 3D view, measurements and model need.",
+      lanes: ["Device hardware", "Native (Java)", "React Native", "Storage & sync"],
+      steps: [
+        { lane: 2, title: "Guided capture", detail: "Distance and angle guidance before the scan." },
+        { lane: 0, title: "Scan", detail: "Depth camera and custom flash fire together; temperature is read." },
+        { lane: 1, title: "Depth processing", detail: "Heavy work stays native; data is downsampled before the bridge." },
+        { lane: 1, title: "Tissue analysis", detail: "An on-device TensorFlow Lite model." },
+        { lane: 2, title: "3D view & measurements", detail: "Wound measurements computed from the depth data." },
+        { lane: 3, title: "Saved on device", detail: "Queued in a local database first, so nothing is lost offline." },
+        { lane: 3, title: "Chunked upload", detail: "Sent in parts to the web platform, retried when back online." },
+      ],
+    },
     decisions: [
       {
         title: "Depth data across the bridge",

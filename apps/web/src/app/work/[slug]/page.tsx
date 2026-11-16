@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getProject, platformLabels, projects } from "@portfolio/content";
 import { Architecture } from "@/components/case-study/architecture";
 import { Decisions } from "@/components/case-study/decisions";
+import { Flow } from "@/components/case-study/flow";
 import { MediaGallery } from "@/components/case-study/media-gallery";
 import { formatRange } from "@/lib/dates";
 import { pageMetadata } from "@/lib/metadata";
@@ -115,6 +116,15 @@ async function CaseStudy({ params }: Pick<PageProps<"/work/[slug]">, "params">) 
               Screens
             </h2>
             <MediaGallery media={project.media} />
+          </section>
+        )}
+
+        {project.flow && (
+          <section aria-labelledby="flow-title" className="page-gutter pb-20">
+            <h2 id="flow-title" className="mb-8 font-semiwide text-h2 font-bold uppercase">
+              {project.flow.title}
+            </h2>
+            <Flow data={project.flow} />
           </section>
         )}
 

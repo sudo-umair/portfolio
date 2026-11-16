@@ -35,6 +35,25 @@ export const architectureSchema = z.object({
     .min(2),
 });
 
+export const flowSchema = z
+  .object({
+    title: z.string(),
+    summary: z.string(),
+    lanes: z.array(z.string()).min(2),
+    steps: z
+      .array(
+        z.object({
+          lane: z.number().int().nonnegative(),
+          title: z.string(),
+          detail: z.string(),
+        }),
+      )
+      .min(2),
+  })
+  .refine((flow) => flow.steps.every((step) => step.lane < flow.lanes.length), {
+    message: "Every step's lane must index into lanes",
+  });
+
 /** An engineering decision told as problem → solution. */
 export const decisionSchema = z.object({
   title: z.string(),
@@ -86,6 +105,7 @@ export const projectSchema = z.object({
   highlights: z.array(z.string()).min(1),
   links: z.array(linkSchema).default([]),
   architecture: architectureSchema.optional(),
+  flow: flowSchema.optional(),
   decisions: z.array(decisionSchema).default([]),
   media: z.array(mediaSchema).default([]),
   /**
@@ -142,5 +162,6 @@ export type Profile = z.infer<typeof profileSchema>;
 export type Education = z.infer<typeof educationSchema>;
 export type Architecture = z.infer<typeof architectureSchema>;
 export type Decision = z.infer<typeof decisionSchema>;
+export type Flow = z.infer<typeof flowSchema>;
 export type Media = z.infer<typeof mediaSchema>;
 export type Device = Media["device"];
